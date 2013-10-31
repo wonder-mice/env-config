@@ -11,9 +11,10 @@ else
 	exit 1
 fi
 
-# Process options
-ENV_CONFIG_COLORS='yes'
+# Options
+ENV_CONFIG_SRC=$(dirname "${BASH_SOURCE[0]}")
 ENV_CONFIG_DIR='~/.env-config'
+ENV_CONFIG_COLORS='yes'
 ENV_CONFIG_VERBOSE='no'
 ENV_CONFIG_DRYRUN='no'
 while getopts ":hvyc:d:" opt; do
@@ -33,15 +34,15 @@ while getopts ":hvyc:d:" opt; do
 		y)
 			ENV_CONFIG_DRYRUN='yes'
 			;;
+		d)
+			ENV_CONFIG_DIR=${OPTARG}
+			;;
 		c)
 			if [[ ${OPTARG} != 'yes' && ${OPTARG} != 'no' ]]; then
 				echo "Error: invalid value ${OPTARG} for option -c"
 				exit 1
 			fi
 			ENV_CONFIG_COLORS=${OPTARG}
-			;;
-		d)
-			ENV_CONFIG_DIR=${OPTARG}
 			;;
 		\?)
 			echo "Error: invalid option -${OPTARG}"
@@ -54,14 +55,13 @@ while getopts ":hvyc:d:" opt; do
 	esac
 done
 eval ENV_CONFIG_ABSDIR=${ENV_CONFIG_DIR}
-ENV_CONFIG_SRC=$(dirname "${BASH_SOURCE[0]}")
 
 if [[ ${ENV_CONFIG_VERBOSE} == 'yes' ]]; then
+	echo "src:      \"${ENV_CONFIG_SRC}\""
+	echo "dir:      \"${ENV_CONFIG_DIR}\" (\"${ENV_CONFIG_ABSDIR}\")"
+	echo "platform: \"${ENV_CONFIG_PLATFORM}\""
 	echo "colors:   \"${ENV_CONFIG_COLORS}\""
 	echo "dryrun:   \"${ENV_CONFIG_DRYRUN}\""
-	echo "platform: \"${ENV_CONFIG_PLATFORM}\""
-	echo "dir:      \"${ENV_CONFIG_DIR}\" (\"${ENV_CONFIG_ABSDIR}\")"
-	echo "src:      \"${ENV_CONFIG_SRC}\""
 fi
 
 if [[ ${ENV_CONFIG_DRYRUN} == 'no' ]]; then

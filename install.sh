@@ -4,9 +4,8 @@
 ENV_CONFIG_PLATFORM='unknown'
 if [[ ${OSTYPE} == darwin* ]]; then
 	ENV_CONFIG_PLATFORM='darwin'
-# Not tested
-#elif [[ ${OSTYPE} == linux* ]]; then
-#	ENV_CONFIG_PLATFORM='linux'
+elif [[ ${OSTYPE} == linux* ]]; then
+	ENV_CONFIG_PLATFORM='linux'
 else
 	echo "Error: unknown OS type \"${OSTYPE}\""
 	exit 1
@@ -54,25 +53,31 @@ while getopts ":hvyc:d:" opt; do
 			;;
 	esac
 done
-eval DST_DIR=${ENV_CONFIG_DIR}
-DST_BASHRC=${DST_DIR}/bashrc
-SRC_DIR=$(dirname "${BASH_SOURCE[0]}")
+eval ENV_CONFIG_ABSDIR=${ENV_CONFIG_DIR}
+ENV_CONFIG_SRC=$(dirname "${BASH_SOURCE[0]}")
 
 if [[ ${ENV_CONFIG_VERBOSE} == 'yes' ]]; then
 	echo "colors:   \"${ENV_CONFIG_COLORS}\""
 	echo "dryrun:   \"${ENV_CONFIG_DRYRUN}\""
 	echo "platform: \"${ENV_CONFIG_PLATFORM}\""
-	echo "dir:      \"${ENV_CONFIG_DIR}\" (\"${DST_DIR}\")"
-	echo "src:      \"${SRC_DIR}\""
+	echo "dir:      \"${ENV_CONFIG_DIR}\" (\"${ENV_CONFIG_ABSDIR}\")"
+	echo "src:      \"${ENV_CONFIG_SRC}\""
 fi
 
 if [[ ${ENV_CONFIG_DRYRUN} == 'no' ]]; then
-	mkdir -p "${DST_DIR}" || exit 1
+	mkdir -p "${ENV_CONFIG_ABSDIR}" || exit 1
+
+	# readline
+	mkdir -p "${ENV_CONFIG_ABSDIR}/readline" || exit 1
+	cp ${ENV_CONFIG_SRC}/readline/inputrc ${ENV_CONFIG_ABSDIR}/readline/inputrc
+
+	# bashrc
+	mkdir -p "${ENV_CONFIG_ABSDIR}/bash" || exit 1
 	sed \
 		-e "s;^#ENV_CONFIG_PLATFORM=.*;ENV_CONFIG_PLATFORM=\'${ENV_CONFIG_PLATFORM}\';" \
 		-e "s;^#ENV_CONFIG_COLORS=.*;ENV_CONFIG_COLORS=\'${ENV_CONFIG_COLORS}\';" \
 		-e "s;^#ENV_CONFIG_DIR=.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
-		"${SRC_DIR}/bashrc" > ${DST_DIR}/bashrc
+		"${ENV_CONFIG_SRC}/bash/bashrc" > ${ENV_CONFIG_ABSDIR}/bash/bashrc || exit 1
 fi
 
 if [[ ${ENV_CONFIG_PLATFORM} == 'darwin' ]]; then
@@ -83,4 +88,4 @@ fi
 
 echo ""
 echo "Add the following line to your \"${DST_SOURCE}\":"
-echo "source ${ENV_CONFIG_DIR}/bashrc"
+echo "source ${ENV_CONFIG_DIR}/bash/bashrc"

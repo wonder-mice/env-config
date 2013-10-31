@@ -1,6 +1,6 @@
+#ENV_CONFIG_DIR=<path>
 #ENV_CONFIG_PLATFORM=(darwin|linux)
 #ENV_CONFIG_COLORS=(yes|no)
-#ENV_CONFIG_DIR=<path>
 
 echo " /\_/\ "
 echo "( o.o )"

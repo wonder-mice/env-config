@@ -1,38 +1,48 @@
 #!/bin/sh
 
 # Detect platform
-platform='unknown'
+ENV_CONFIG_PLATFORM='unknown'
 if [[ ${OSTYPE} == darwin* ]]; then
-	platform='darwin'
+	ENV_CONFIG_PLATFORM='darwin'
 # Not tested
 #elif [[ ${OSTYPE} == linux* ]]; then
-#	platform='linux'
+#	ENV_CONFIG_PLATFORM='linux'
 else
 	echo "Error: unknown OS type \"${OSTYPE}\""
 	exit 1
 fi
 
 # Process options
-colors="yes"
-dstdir="~/.env-config/bash"
-while getopts ":hc:d:" opt; do
+ENV_CONFIG_COLORS='yes'
+ENV_CONFIG_DIR='~/.env-config'
+ENV_CONFIG_VERBOSE='no'
+ENV_CONFIG_DRYRUN='no'
+while getopts ":hvyc:d:" opt; do
 	case ${opt} in
 		h)
 			echo "Options are:"
 			echo "    -h          - show this help"
-			echo "    -c (yes|no) - enable colors (default is ${colors})"
-			echo "    -d <dir>    - install to dir (default is \"${dstdir}\")"
+			echo "    -v          - verbose output"
+			echo "    -y          - dry run"
+			echo "    -c (yes|no) - enable colors (default is ${ENV_CONFIG_COLORS})"
+			echo "    -d <dir>    - install to dir (default is \"${ENV_CONFIG_DIR}\")"
 			exit 1
 			;;
+		v)
+			ENV_CONFIG_VERBOSE='yes'
+			;;
+		y)
+			ENV_CONFIG_DRYRUN='yes'
+			;;
 		c)
-			colors=${OPTARG}
-			if [[ ${colors} != "yes" && ${colors} != "no" ]]; then
-				echo "Error: invalid value ${colors} for option -c"
+			if [[ ${OPTARG} != 'yes' && ${OPTARG} != 'no' ]]; then
+				echo "Error: invalid value ${OPTARG} for option -c"
 				exit 1
 			fi
+			ENV_CONFIG_COLORS=${OPTARG}
 			;;
 		d)
-			dstdir=${OPTARG}
+			ENV_CONFIG_DIR=${OPTARG}
 			;;
 		\?)
 			echo "Error: invalid option -${OPTARG}"
@@ -44,21 +54,33 @@ while getopts ":hc:d:" opt; do
 			;;
 	esac
 done
-eval dstdirp=${dstdir}
+eval DST_DIR=${ENV_CONFIG_DIR}
+DST_BASHRC=${DST_DIR}/bashrc
+SRC_DIR=$(dirname "${BASH_SOURCE[0]}")
 
-# Context
-echo "Platform: \"${platform}\""
-echo "Colors: \"${colors}\""
-echo "Dir: \"${dstdir}\" (\"${dstdirp}\")"
-
-# Prepare
-mkdir -p "${dstdirp}" || exit 1
-fbashrc="${dstdirp}/bashrc"
-
-if [[ $platform == 'darwin' ]]; then
-	alias ls="ls -G"
-	alias grep="grep --color=auto"
+if [[ ${ENV_CONFIG_VERBOSE} == 'yes' ]]; then
+	echo "colors:   \"${ENV_CONFIG_COLORS}\""
+	echo "dryrun:   \"${ENV_CONFIG_DRYRUN}\""
+	echo "platform: \"${ENV_CONFIG_PLATFORM}\""
+	echo "dir:      \"${ENV_CONFIG_DIR}\" (\"${DST_DIR}\")"
+	echo "src:      \"${SRC_DIR}\""
 fi
 
-echo "Add thid line to .bashrc"
-echo "source ${fbashrc}"
+if [[ ${ENV_CONFIG_DRYRUN} == 'no' ]]; then
+	mkdir -p "${DST_DIR}" || exit 1
+	sed \
+		-e "s;^#ENV_CONFIG_PLATFORM=.*;ENV_CONFIG_PLATFORM=\'${ENV_CONFIG_PLATFORM}\';" \
+		-e "s;^#ENV_CONFIG_COLORS=.*;ENV_CONFIG_COLORS=\'${ENV_CONFIG_COLORS}\';" \
+		-e "s;^#ENV_CONFIG_DIR=.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
+		"${SRC_DIR}/bashrc" > ${DST_DIR}/bashrc
+fi
+
+if [[ ${ENV_CONFIG_PLATFORM} == 'darwin' ]]; then
+	DST_SOURCE='~/.bash_profile'
+elif [[ ${ENV_CONFIG_PLATFORM} == 'linux' ]]; then
+	DST_SOURCE='~/.bashrc'
+fi
+
+echo ""
+echo "Add the following line to your \"${DST_SOURCE}\":"
+echo "source ${ENV_CONFIG_DIR}/bashrc"

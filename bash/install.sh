@@ -14,9 +14,9 @@ fi
 
 # Process options
 colors="yes"
-dstdir="~/.bash"
+dstdir="~/.env-config/bash"
 while getopts ":hc:d:" opt; do
-	case $opt in
+	case ${opt} in
 		h)
 			echo "Options are:"
 			echo "    -h          - show this help"
@@ -44,13 +44,21 @@ while getopts ":hc:d:" opt; do
 			;;
 	esac
 done
+eval dstdirp=${dstdir}
 
 # Context
 echo "Platform: \"${platform}\""
 echo "Colors: \"${colors}\""
-echo "Dir: \"${dstdir}\""
+echo "Dir: \"${dstdir}\" (\"${dstdirp}\")"
+
+# Prepare
+mkdir -p "${dstdirp}" || exit 1
+fbashrc="${dstdirp}/bashrc"
 
 if [[ $platform == 'darwin' ]]; then
 	alias ls="ls -G"
-	alias grep='grep --color=auto'
+	alias grep="grep --color=auto"
 fi
+
+echo "Add thid line to .bashrc"
+echo "source ${fbashrc}"

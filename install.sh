@@ -116,7 +116,7 @@ if [[ ${EC_DRYRUN} == 'no' ]]; then
 	# bash - source
 	case ${ENV_CONFIG_PLATFORM} in
 		'darwin') eval EC_BASHRC_FILE='~/.bash_profile';;
-		'linux') eval EC_BASHRC_FILE='~/.bashrc1';;
+		'linux') eval EC_BASHRC_FILE='~/.bashrc';;
 		*) echo "Error: unknown platform ${ENV_CONFIG_PLATFORM}"; exit 1;;
 	esac
 	if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_BASHRC_FILE} &> /dev/null; then

@@ -1,0 +1,10 @@
+#ENV_CONFIG_PLATFORM=(darwin|linux)
+#ENV_CONFIG_COLORS=(yes|no)
+#ENV_CONFIG_DIR=<path>
+
+if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
+	if [[ ${ENV_CONFIG_PLATFORM} == 'darwin' ]]; then
+		alias ls="ls -G"
+		alias grep="grep --color=auto"
+	fi
+fi

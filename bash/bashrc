@@ -2,6 +2,10 @@
 #ENV_CONFIG_COLORS=(yes|no)
 #ENV_CONFIG_DIR=<path>
 
+echo " /\_/\ "
+echo "( o.o )"
+echo " > ^ < "
+
 if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
 	if [[ ${ENV_CONFIG_PLATFORM} == 'darwin' ]]; then
 		alias ls="ls -G"

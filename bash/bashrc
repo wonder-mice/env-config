@@ -7,10 +7,13 @@ echo "( o.o )"
 echo " > ^ < "
 
 # custom prompt
+ENV_CONFIG_GIT_PROMPT='$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1]/")'
 if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
-	PS1='\[\033[0;34m\]\W\[\033[00m\]\$ '
+	PS1='\[\033[0;32m\]\W\[\033[00m\]\$ '
+	PS1="\[\033[0;34m\]${ENV_CONFIG_GIT_PROMPT}\[\033[00m\] ${PS1}"
 else
 	PS1='\W$ '
+	PS1="${ENV_CONFIG_GIT_PROMPT} ${PS1}"
 fi
 
 # colorize commands

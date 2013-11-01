@@ -17,7 +17,7 @@ ENV_CONFIG_COLORS='yes'
 EC_SRC=$(dirname "${BASH_SOURCE[0]}")
 EC_VERBOSE='no'
 EC_DRYRUN='no'
-while getopts ":hvyc:d:" OPT; do
+while getopts ":hvync:d:" OPT; do
 	case ${OPT} in
 		h)
 			echo "Options are:"
@@ -83,32 +83,6 @@ fi
 if [[ ${EC_DRYRUN} == 'no' ]]; then
 	mkdir -p "${EC_DST}" || exit 1
 
-	# bashrc - copy
-	mkdir -p "${EC_DST}/bash" || exit 1
-	sed \
-		-e "s;^#ENV_CONFIG_PLATFORM=.*;ENV_CONFIG_PLATFORM=\'${ENV_CONFIG_PLATFORM}\';" \
-		-e "s;^#ENV_CONFIG_COLORS=.*;ENV_CONFIG_COLORS=\'${ENV_CONFIG_COLORS}\';" \
-		-e "s;^#ENV_CONFIG_DIR=.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
-		"${EC_SRC}/bash/bashrc" > ${EC_DST}/bash/bashrc || exit 1
-
-	# bashrc - source
-	case ${ENV_CONFIG_PLATFORM} in
-		'darwin') eval EC_BASHRC_FILE='~/.bash_profile';;
-		'linux') eval EC_BASHRC_FILE='~/.bashrc1';;
-		*) echo "Error: unknown platform ${ENV_CONFIG_PLATFORM}"; exit 1;;
-	esac
-	if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_BASHRC_FILE} &> /dev/null; then
-		# ${ENV_CONFIG_DIR} was not found in ${EC_BASHRC_FILE}
-		# It is OK to append init script.
-		# If ${EC_BASHRC_FILE} not empty, append extra new line for extra style
-		if [[ -s ${EC_BASHRC_FILE} ]]; then
-			echo >> ${EC_BASHRC_FILE};
-		fi
-		sed \
-			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-			"${EC_SRC}/bash/bashrc-init" >> ${EC_BASHRC_FILE}
-	fi
-			
 	# readline - copy
 	mkdir -p "${EC_DST}/readline" || exit 1
 	cp ${EC_SRC}/readline/inputrc ${EC_DST}/readline/inputrc
@@ -125,6 +99,33 @@ if [[ ${EC_DRYRUN} == 'no' ]]; then
 		sed \
 			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
 			"${EC_SRC}/readline/inputrc-init" >> ${EC_READLINERC_FILE}
+	fi
+
+	# bash - copy
+	mkdir -p "${EC_DST}/bash" || exit 1
+	sed \
+		-e "s;^#ENV_CONFIG_PLATFORM=.*;ENV_CONFIG_PLATFORM=\'${ENV_CONFIG_PLATFORM}\';" \
+		-e "s;^#ENV_CONFIG_COLORS=.*;ENV_CONFIG_COLORS=\'${ENV_CONFIG_COLORS}\';" \
+		-e "s;^#ENV_CONFIG_DIR=.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
+		"${EC_SRC}/bash/bashrc" > ${EC_DST}/bash/bashrc || exit 1
+	cp "${EC_SRC}/bash/git-completion.bash" "${EC_DST}/bash/git-completion.bash"
+
+	# bash - source
+	case ${ENV_CONFIG_PLATFORM} in
+		'darwin') eval EC_BASHRC_FILE='~/.bash_profile';;
+		'linux') eval EC_BASHRC_FILE='~/.bashrc1';;
+		*) echo "Error: unknown platform ${ENV_CONFIG_PLATFORM}"; exit 1;;
+	esac
+	if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_BASHRC_FILE} &> /dev/null; then
+		# ${ENV_CONFIG_DIR} was not found in ${EC_BASHRC_FILE}
+		# It is OK to append init script.
+		# If ${EC_BASHRC_FILE} not empty, append extra new line for extra style
+		if [[ -s ${EC_BASHRC_FILE} ]]; then
+			echo >> ${EC_BASHRC_FILE};
+		fi
+		sed \
+			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
+			"${EC_SRC}/bash/bashrc-init" >> ${EC_BASHRC_FILE}
 	fi
 fi
 

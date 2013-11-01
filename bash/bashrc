@@ -36,3 +36,6 @@ fi
 
 # git completion
 eval source ${ENV_CONFIG_DIR}/bash/git-completion.bash
+
+# svn completion
+eval source ${ENV_CONFIG_DIR}/bash/svn-completion.bash

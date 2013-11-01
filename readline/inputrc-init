@@ -1,0 +1,2 @@
+# env-config (https://github.com/wonder-mice/env-config)
+$include ${ENV_CONFIG_DIR}/readline/inputrc

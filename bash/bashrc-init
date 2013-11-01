@@ -1,2 +1,2 @@
 # env-config (https://github.com/wonder-mice/env-config)
-source ${ENV_CONFIG_DIR}/bash/bashrc
+eval source "${ENV_CONFIG_DIR}/bash/bashrc"

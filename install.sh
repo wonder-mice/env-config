@@ -108,7 +108,10 @@ if [[ ${EC_DRYRUN} == 'no' ]]; then
 		-e "s;^#ENV_CONFIG_COLORS=.*;ENV_CONFIG_COLORS=\'${ENV_CONFIG_COLORS}\';" \
 		-e "s;^#ENV_CONFIG_DIR=.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
 		"${EC_SRC}/bash/bashrc" > ${EC_DST}/bash/bashrc || exit 1
+	# https://raw.github.com/git/git/master/contrib/completion/git-completion.bash
 	cp "${EC_SRC}/bash/git-completion.bash" "${EC_DST}/bash/git-completion.bash"
+	# https://svn.apache.org/repos/asf/subversion/trunk/tools/client-side/bash_completion
+	cp "${EC_SRC}/bash/svn-completion.bash" "${EC_DST}/bash/svn-completion.bash"
 
 	# bash - source
 	case ${ENV_CONFIG_PLATFORM} in

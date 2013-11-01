@@ -6,6 +6,14 @@ echo " /\_/\ "
 echo "( o.o )"
 echo " > ^ < "
 
+# custom prompt
+if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
+	PS1='\[\033[0;34m\]\W\[\033[00m\]\$ '
+else
+	PS1='\W$ '
+fi
+
+# colorize commands
 if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
 	if [[ ${ENV_CONFIG_PLATFORM} == 'darwin' ]]; then
 		alias ls="ls -G"

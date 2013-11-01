@@ -12,13 +12,13 @@ else
 fi
 
 # Options
-ENV_CONFIG_SRC=$(dirname "${BASH_SOURCE[0]}")
 ENV_CONFIG_DIR='~/.env-config'
 ENV_CONFIG_COLORS='yes'
+ENV_CONFIG_SRC=$(dirname "${BASH_SOURCE[0]}")
 ENV_CONFIG_VERBOSE='no'
 ENV_CONFIG_DRYRUN='no'
-while getopts ":hvyc:d:" opt; do
-	case ${opt} in
+while getopts ":hvyc:d:" OPT; do
+	case ${OPT} in
 		h)
 			echo "Options are:"
 			echo "    -h          - show this help"
@@ -55,6 +55,10 @@ while getopts ":hvyc:d:" opt; do
 	esac
 done
 eval ENV_CONFIG_ABSDIR=${ENV_CONFIG_DIR}
+if [[ ${ENV_CONFIG_ABSDIR} != /* ]]; then
+	echo "Error: install dir \"${ENV_CONFIG_DIR}\" doesn't evaluate to absolute path"
+	exit 1
+fi
 
 if [[ ${ENV_CONFIG_VERBOSE} == 'yes' ]]; then
 	echo "src:      \"${ENV_CONFIG_SRC}\""
@@ -67,25 +71,35 @@ fi
 if [[ ${ENV_CONFIG_DRYRUN} == 'no' ]]; then
 	mkdir -p "${ENV_CONFIG_ABSDIR}" || exit 1
 
-	# readline
-	mkdir -p "${ENV_CONFIG_ABSDIR}/readline" || exit 1
-	cp ${ENV_CONFIG_SRC}/readline/inputrc ${ENV_CONFIG_ABSDIR}/readline/inputrc
-
-	# bashrc
+	# bashrc - copy
 	mkdir -p "${ENV_CONFIG_ABSDIR}/bash" || exit 1
 	sed \
 		-e "s;^#ENV_CONFIG_PLATFORM=.*;ENV_CONFIG_PLATFORM=\'${ENV_CONFIG_PLATFORM}\';" \
 		-e "s;^#ENV_CONFIG_COLORS=.*;ENV_CONFIG_COLORS=\'${ENV_CONFIG_COLORS}\';" \
 		-e "s;^#ENV_CONFIG_DIR=.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
 		"${ENV_CONFIG_SRC}/bash/bashrc" > ${ENV_CONFIG_ABSDIR}/bash/bashrc || exit 1
+
+	# bashrc - source
+	case ${ENV_CONFIG_PLATFORM} in
+		'darwin') eval EC_BASHRC_FILE='~/.bash_profile';;
+		'linux') eval EC_BASHRC_FILE='~/.bashrc1';;
+		*) echo "Error: unknown platform ${ENV_CONFIG_PLATFORM}"; exit 1;;
+	esac
+	if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_BASHRC_FILE} &> /dev/null; then
+		# ${ENV_CONFIG_DIR} was not found in ${EC_BASHRC_FILE}
+		# It is OK to append init script.
+		# If ${EC_BASHRC_FILE} not empty, append extra new line for extra style
+		if [[ -s ${EC_BASHRC_FILE} ]]; then
+			echo >> ${EC_BASHRC_FILE};
+		fi
+		sed \
+			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
+			"${ENV_CONFIG_SRC}/bash/bashrc-init" >> ${EC_BASHRC_FILE}
+	fi
+			
+	# readline
+	mkdir -p "${ENV_CONFIG_ABSDIR}/readline" || exit 1
+	cp ${ENV_CONFIG_SRC}/readline/inputrc ${ENV_CONFIG_ABSDIR}/readline/inputrc
 fi
 
-if [[ ${ENV_CONFIG_PLATFORM} == 'darwin' ]]; then
-	DST_SOURCE='~/.bash_profile'
-elif [[ ${ENV_CONFIG_PLATFORM} == 'linux' ]]; then
-	DST_SOURCE='~/.bashrc'
-fi
-
-echo ""
-echo "Add the following line to your \"${DST_SOURCE}\":"
-echo "source ${ENV_CONFIG_DIR}/bash/bashrc"
+echo "Done!"

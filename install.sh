@@ -14,9 +14,9 @@ fi
 # Options
 ENV_CONFIG_DIR='~/.env-config'
 ENV_CONFIG_COLORS='yes'
-ENV_CONFIG_SRC=$(dirname "${BASH_SOURCE[0]}")
-ENV_CONFIG_VERBOSE='no'
-ENV_CONFIG_DRYRUN='no'
+EC_SRC=$(dirname "${BASH_SOURCE[0]}")
+EC_VERBOSE='no'
+EC_DRYRUN='no'
 while getopts ":hvyc:d:" OPT; do
 	case ${OPT} in
 		h)
@@ -29,10 +29,10 @@ while getopts ":hvyc:d:" OPT; do
 			exit 1
 			;;
 		v)
-			ENV_CONFIG_VERBOSE='yes'
+			EC_VERBOSE='yes'
 			;;
 		y)
-			ENV_CONFIG_DRYRUN='yes'
+			EC_DRYRUN='yes'
 			;;
 		d)
 			ENV_CONFIG_DIR=${OPTARG}
@@ -54,30 +54,42 @@ while getopts ":hvyc:d:" OPT; do
 			;;
 	esac
 done
-eval ENV_CONFIG_ABSDIR=${ENV_CONFIG_DIR}
-if [[ ${ENV_CONFIG_ABSDIR} != /* ]]; then
-	echo "Error: install dir \"${ENV_CONFIG_DIR}\" doesn't evaluate to absolute path"
+
+# Check install dir path
+eval EC_DST=${ENV_CONFIG_DIR}
+EC_DST_CHECK=$(printf '%q' "${ENV_CONFIG_DIR}")
+if [[ ${EC_DST_CHECK} != ${ENV_CONFIG_DIR} ]]; then
+	echo "Error: install dir \"${ENV_CONFIG_DIR}\" must not contain spaces, variables or other expandable tokens (except ~)"
+	exit 1
+fi
+EC_DST_CHECK=${EC_DST_CHECK/#~/${HOME}}
+if [[ ${EC_DST_CHECK} != ${EC_DST} ]]; then
+	echo "Error: install dir \"${ENV_CONFIG_DIR}\" requires complex substitution that is not supported"
+	exit 1
+fi
+if [[ ${EC_DST} != /* ]]; then
+	echo "Error: install dir \"${ENV_CONFIG_DIR}\" doesn't evaluate to absolute path (\"${EC_DST}\")"
 	exit 1
 fi
 
-if [[ ${ENV_CONFIG_VERBOSE} == 'yes' ]]; then
-	echo "src:      \"${ENV_CONFIG_SRC}\""
-	echo "dir:      \"${ENV_CONFIG_DIR}\" (\"${ENV_CONFIG_ABSDIR}\")"
+if [[ ${EC_VERBOSE} == 'yes' ]]; then
+	echo "src:      \"${EC_SRC}\""
+	echo "dir:      \"${ENV_CONFIG_DIR}\" (\"${EC_DST}\")"
 	echo "platform: \"${ENV_CONFIG_PLATFORM}\""
 	echo "colors:   \"${ENV_CONFIG_COLORS}\""
-	echo "dryrun:   \"${ENV_CONFIG_DRYRUN}\""
+	echo "dryrun:   \"${EC_DRYRUN}\""
 fi
 
-if [[ ${ENV_CONFIG_DRYRUN} == 'no' ]]; then
-	mkdir -p "${ENV_CONFIG_ABSDIR}" || exit 1
+if [[ ${EC_DRYRUN} == 'no' ]]; then
+	mkdir -p "${EC_DST}" || exit 1
 
 	# bashrc - copy
-	mkdir -p "${ENV_CONFIG_ABSDIR}/bash" || exit 1
+	mkdir -p "${EC_DST}/bash" || exit 1
 	sed \
 		-e "s;^#ENV_CONFIG_PLATFORM=.*;ENV_CONFIG_PLATFORM=\'${ENV_CONFIG_PLATFORM}\';" \
 		-e "s;^#ENV_CONFIG_COLORS=.*;ENV_CONFIG_COLORS=\'${ENV_CONFIG_COLORS}\';" \
 		-e "s;^#ENV_CONFIG_DIR=.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
-		"${ENV_CONFIG_SRC}/bash/bashrc" > ${ENV_CONFIG_ABSDIR}/bash/bashrc || exit 1
+		"${EC_SRC}/bash/bashrc" > ${EC_DST}/bash/bashrc || exit 1
 
 	# bashrc - source
 	case ${ENV_CONFIG_PLATFORM} in
@@ -94,12 +106,26 @@ if [[ ${ENV_CONFIG_DRYRUN} == 'no' ]]; then
 		fi
 		sed \
 			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-			"${ENV_CONFIG_SRC}/bash/bashrc-init" >> ${EC_BASHRC_FILE}
+			"${EC_SRC}/bash/bashrc-init" >> ${EC_BASHRC_FILE}
 	fi
 			
-	# readline
-	mkdir -p "${ENV_CONFIG_ABSDIR}/readline" || exit 1
-	cp ${ENV_CONFIG_SRC}/readline/inputrc ${ENV_CONFIG_ABSDIR}/readline/inputrc
+	# readline - copy
+	mkdir -p "${EC_DST}/readline" || exit 1
+	cp ${EC_SRC}/readline/inputrc ${EC_DST}/readline/inputrc
+
+	# readline - source
+	eval EC_READLINERC_FILE='~/.inputrc'
+	if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_READLINERC_FILE} &> /dev/null; then
+		# ${ENV_CONFIG_DIR} was not found in ${EC_READLINERC_FILE}
+		# It is OK to append init script.
+		# If ${EC_READLINERC_FILE} not empty, append extra new line for extra style
+		if [[ -s ${EC_READLINERC_FILE} ]]; then
+			echo >> ${EC_READLINERC_FILE};
+		fi
+		sed \
+			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
+			"${EC_SRC}/readline/inputrc-init" >> ${EC_READLINERC_FILE}
+	fi
 fi
 
 echo "Done!"

@@ -33,3 +33,6 @@ if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
 		alias grep="grep --color=auto"
 	fi
 fi
+
+# git completion
+eval source ${ENV_CONFIG_DIR}/bash/git-completion.bash

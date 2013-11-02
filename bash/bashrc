@@ -11,12 +11,18 @@ if [[ -n ${ec_dir+#} && -f ${ec_dir}/settings ]]; then
 fi
 ENV_CONFIG_PLATFORM=${ENV_CONFIG_PLATFORM-'unknown'}
 ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
+ENV_CONFIG_READLINE=${ENV_CONFIG_READLINE-'yes'}
 ENV_CONFIG_BASH_PROMPT_GIT_BRANCH=${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-'yes'}
 
 # hello kitty
 echo " /\_/\ "
 echo "( o.o )"
 echo " > ^ < "
+
+# readline
+if [[ ${ENV_CONFIG_READLINE} == 'yes' ]]; then
+	INPUTRC=${ec_dir}/readline/inputrc
+fi
 
 # custom prompt
 if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then

@@ -1,5 +1,1 @@
-* Rename all EC_XXX to ec_xx
-
-* Change git branch prompt color to light blue
-
 * Do something with systems where ${INPUTRC} defined and points to /etc/inputrc

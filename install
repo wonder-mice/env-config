@@ -11,19 +11,29 @@ else
 	exit 1
 fi
 
-# settings
+# load settings
 eval ec_dir=${ENV_CONFIG_DIR}
 if [[ -n ${ec_dir+#} && -f ${ec_dir}/settings ]]; then
 	source ${ec_dir}/settings
 fi
 ENV_CONFIG_DIR=${ENV_CONFIG_DIR-'~/.env-config'}
 ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
+ENV_CONFIG_READLINE=${ENV_CONFIG_READLINE-'yes'}
+ENV_CONFIG_BASH_PROMPT_GIT_BRANCH=${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-'yes'}
 
 # command line args
+function ec_set_feature_var {
+	case ${1} in
+		colors) ENV_CONFIG_COLORS="${2}";;
+		readline) ENV_CONFIG_READLINE="${2}";;
+		bash-prompt-git-branch) ENV_CONFIG_BASH_PROMPT_GIT_BRANCH="${2}";;
+		*) echo "Error: unknown feature \"${1}\""; exit 1;;
+	esac
+}
 ec_src=$(dirname "${BASH_SOURCE[0]}")
 ec_verbose='no'
 ec_dryrun='no'
-while getopts ":hvtnc:d:" OPT; do
+while getopts ":hvty:n:d:" OPT; do
 	case ${OPT} in
 		h)
 			echo "Options are:"
@@ -32,11 +42,12 @@ while getopts ":hvtnc:d:" OPT; do
 			echo "    -t           - dry run"
 			echo "    -y <feature> - enable feature"
 			echo "    -n <feature> - disable feature"
-			echo "    -c (yes|no)  - enable colors (default is ${ENV_CONFIG_COLORS})"
 			echo "    -d <dir>     - install to dir (default is \"${ENV_CONFIG_DIR}\")"
 			echo ""
 			echo "Features:"
-			echo "    colors       - add colors"
+			echo "    colors                 - more colors"
+			echo "    readline               - readline config file"
+			echo "    bash-prompt-git-branch - git branch name in bash command prompt"
 			exit 1
 			;;
 		v)
@@ -45,15 +56,14 @@ while getopts ":hvtnc:d:" OPT; do
 		t)
 			ec_dryrun='yes'
 			;;
+		y)
+			ec_set_feature_var ${OPTARG} 'yes'
+			;;
+		n)
+			ec_set_feature_var ${OPTARG} 'no'
+			;;
 		d)
 			ENV_CONFIG_DIR=${OPTARG}
-			;;
-		c)
-			if [[ ${OPTARG} != 'yes' && ${OPTARG} != 'no' ]]; then
-				echo "Error: invalid value ${OPTARG} for option -c"
-				exit 1
-			fi
-			ENV_CONFIG_COLORS=${OPTARG}
 			;;
 		\?)
 			echo "Error: invalid option -${OPTARG}"
@@ -66,7 +76,7 @@ while getopts ":hvtnc:d:" OPT; do
 	esac
 done
 
-# Check install dir path
+# check install dir path
 eval ec_dir=${ENV_CONFIG_DIR}
 ec_dir_check=$(printf '%q' "${ENV_CONFIG_DIR}")
 if [[ ${ec_dir_check} != ${ENV_CONFIG_DIR} ]]; then
@@ -83,12 +93,15 @@ if [[ ${ec_dir} != /* ]]; then
 	exit 1
 fi
 
+# print settings 
 if [[ ${ec_verbose} == 'yes' ]]; then
-	echo "Source dir:  \"${ec_src}\""
-	echo "Install dir: \"${ENV_CONFIG_DIR}\" (\"${ec_dir}\")"
-	echo "Platform:    \"${ENV_CONFIG_PLATFORM}\""
-	echo "Colors:      \"${ENV_CONFIG_COLORS}\""
-	echo "Dryrun:      \"${ec_dryrun}\""
+	echo "Source dir:                  \"${ec_src}\""
+	echo "Install dir:                 \"${ENV_CONFIG_DIR}\" (\"${ec_dir}\")"
+	echo "Platform:                    \"${ENV_CONFIG_PLATFORM}\""
+	echo "Colors:                      \"${ENV_CONFIG_COLORS}\""
+	echo "Readline:                    \"${ENV_CONFIG_READLINE}\""
+	echo "Bash prompt with git branch: \"${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH}\""
+	echo "Dryrun:                      \"${ec_dryrun}\""
 fi
 
 if [[ ${ec_dryrun} == 'no' ]]; then
@@ -99,6 +112,8 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	echo \
 		"ENV_CONFIG_PLATFORM='${ENV_CONFIG_PLATFORM}'\n" \
 		"ENV_CONFIG_COLORS='${ENV_CONFIG_COLORS}'\n" \
+		"ENV_CONFIG_READLINE='${ENV_CONFIG_READLINE}'\n" \
+		"ENV_CONFIG_BASH_PROMPT_GIT_BRANCH='${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH}'\n" \
 		| sed -e "s;^[[:blank:]]*;;" -e "/^$/d" > ${ec_settings_file}
 
 	# readline - copy
@@ -106,18 +121,18 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	cp ${ec_src}/readline/inputrc ${ec_dir}/readline/inputrc
 
 	# readline - source
-	eval EC_READLINERC_FILE='~/.inputrc'
-	if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_READLINERC_FILE} &> /dev/null; then
-		# ${ENV_CONFIG_DIR} was not found in ${EC_READLINERC_FILE}
-		# It is OK to append init script.
-		# If ${EC_READLINERC_FILE} not empty, append extra new line for extra style
-		if [[ -s ${EC_READLINERC_FILE} ]]; then
-			echo >> ${EC_READLINERC_FILE};
-		fi
-		sed \
-			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-			"${ec_src}/readline/inputrc-init" >> ${EC_READLINERC_FILE}
-	fi
+	#eval EC_READLINERC_FILE='~/.inputrc'
+	#if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_READLINERC_FILE} &> /dev/null; then
+	#	# ${ENV_CONFIG_DIR} was not found in ${EC_READLINERC_FILE}
+	#	# It is OK to append init script.
+	#	# If ${EC_READLINERC_FILE} not empty, append extra new line for extra style
+	#	if [[ -s ${EC_READLINERC_FILE} ]]; then
+	#		echo >> ${EC_READLINERC_FILE};
+	#	fi
+	#	sed \
+	#		-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
+	#		"${ec_src}/readline/inputrc-init" >> ${EC_READLINERC_FILE}
+	#fi
 
 	# bash - copy
 	mkdir -p "${ec_dir}/bash" || exit 1

@@ -23,24 +23,29 @@ ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
 ec_src=$(dirname "${BASH_SOURCE[0]}")
 ec_verbose='no'
 ec_dryrun='no'
-while getopts ":hvync:p:" OPT; do
+while getopts ":hvtnc:d:" OPT; do
 	case ${OPT} in
 		h)
 			echo "Options are:"
-			echo "    -h          - show this help"
-			echo "    -v          - verbose output"
-			echo "    -y          - dry run"
-			echo "    -c (yes|no) - enable colors (default is ${ENV_CONFIG_COLORS})"
-			echo "    -p <dir>    - install to dir (default is \"${ENV_CONFIG_DIR}\")"
+			echo "    -h           - show this help"
+			echo "    -v           - verbose output"
+			echo "    -t           - dry run"
+			echo "    -y <feature> - enable feature"
+			echo "    -n <feature> - disable feature"
+			echo "    -c (yes|no)  - enable colors (default is ${ENV_CONFIG_COLORS})"
+			echo "    -d <dir>     - install to dir (default is \"${ENV_CONFIG_DIR}\")"
+			echo ""
+			echo "Features:"
+			echo "    colors       - add colors"
 			exit 1
 			;;
 		v)
 			ec_verbose='yes'
 			;;
-		y)
+		t)
 			ec_dryrun='yes'
 			;;
-		p)
+		d)
 			ENV_CONFIG_DIR=${OPTARG}
 			;;
 		c)

@@ -1,3 +1,5 @@
+* Rename all EC_XXX to ec_xx
+
 * Change git branch prompt color to light blue
 
 * Put squalre breakets inside sed expression in git branch prompt

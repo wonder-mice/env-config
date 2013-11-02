@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Detect platform
+# detect platform
 ENV_CONFIG_PLATFORM='unknown'
 if [[ ${OSTYPE} == darwin* ]]; then
 	ENV_CONFIG_PLATFORM='darwin'
@@ -11,15 +11,19 @@ else
 	exit 1
 fi
 
-# Config
+# settings
+eval ec_dir=${ENV_CONFIG_DIR}
+if [[ -n ${ec_dir+#} && -f ${ec_dir}/settings ]]; then
+	source ${ec_dir}/settings
+fi
 ENV_CONFIG_DIR=${ENV_CONFIG_DIR-'~/.env-config'}
 ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
 
-# Options
-EC_SRC=$(dirname "${BASH_SOURCE[0]}")
-EC_VERBOSE='no'
-EC_DRYRUN='no'
-while getopts ":hvync:d:" OPT; do
+# command line args
+ec_src=$(dirname "${BASH_SOURCE[0]}")
+ec_verbose='no'
+ec_dryrun='no'
+while getopts ":hvync:p:" OPT; do
 	case ${OPT} in
 		h)
 			echo "Options are:"
@@ -27,16 +31,16 @@ while getopts ":hvync:d:" OPT; do
 			echo "    -v          - verbose output"
 			echo "    -y          - dry run"
 			echo "    -c (yes|no) - enable colors (default is ${ENV_CONFIG_COLORS})"
-			echo "    -d <dir>    - install to dir (default is \"${ENV_CONFIG_DIR}\")"
+			echo "    -p <dir>    - install to dir (default is \"${ENV_CONFIG_DIR}\")"
 			exit 1
 			;;
 		v)
-			EC_VERBOSE='yes'
+			ec_verbose='yes'
 			;;
 		y)
-			EC_DRYRUN='yes'
+			ec_dryrun='yes'
 			;;
-		d)
+		p)
 			ENV_CONFIG_DIR=${OPTARG}
 			;;
 		c)
@@ -58,36 +62,43 @@ while getopts ":hvync:d:" OPT; do
 done
 
 # Check install dir path
-eval EC_DST=${ENV_CONFIG_DIR}
-EC_DST_CHECK=$(printf '%q' "${ENV_CONFIG_DIR}")
-if [[ ${EC_DST_CHECK} != ${ENV_CONFIG_DIR} ]]; then
+eval ec_dir=${ENV_CONFIG_DIR}
+ec_dir_check=$(printf '%q' "${ENV_CONFIG_DIR}")
+if [[ ${ec_dir_check} != ${ENV_CONFIG_DIR} ]]; then
 	echo "Error: install dir \"${ENV_CONFIG_DIR}\" must not contain spaces, variables or other expandable tokens (except ~)"
 	exit 1
 fi
-EC_DST_CHECK=${EC_DST_CHECK/#~/${HOME}}
-if [[ ${EC_DST_CHECK} != ${EC_DST} ]]; then
+ec_dir_check=${ec_dir_check/#~/${HOME}}
+if [[ ${ec_dir_check} != ${ec_dir} ]]; then
 	echo "Error: install dir \"${ENV_CONFIG_DIR}\" requires complex substitution that is not supported"
 	exit 1
 fi
-if [[ ${EC_DST} != /* ]]; then
-	echo "Error: install dir \"${ENV_CONFIG_DIR}\" doesn't evaluate to absolute path (\"${EC_DST}\")"
+if [[ ${ec_dir} != /* ]]; then
+	echo "Error: install dir \"${ENV_CONFIG_DIR}\" doesn't evaluate to absolute path (\"${ec_dir}\")"
 	exit 1
 fi
 
-if [[ ${EC_VERBOSE} == 'yes' ]]; then
-	echo "src:      \"${EC_SRC}\""
-	echo "dir:      \"${ENV_CONFIG_DIR}\" (\"${EC_DST}\")"
-	echo "platform: \"${ENV_CONFIG_PLATFORM}\""
-	echo "colors:   \"${ENV_CONFIG_COLORS}\""
-	echo "dryrun:   \"${EC_DRYRUN}\""
+if [[ ${ec_verbose} == 'yes' ]]; then
+	echo "Source dir:  \"${ec_src}\""
+	echo "Install dir: \"${ENV_CONFIG_DIR}\" (\"${ec_dir}\")"
+	echo "Platform:    \"${ENV_CONFIG_PLATFORM}\""
+	echo "Colors:      \"${ENV_CONFIG_COLORS}\""
+	echo "Dryrun:      \"${ec_dryrun}\""
 fi
 
-if [[ ${EC_DRYRUN} == 'no' ]]; then
-	mkdir -p "${EC_DST}" || exit 1
+if [[ ${ec_dryrun} == 'no' ]]; then
+	mkdir -p "${ec_dir}" || exit 1
+
+	# settings file
+	ec_settings_file="${ec_dir}/settings"
+	echo \
+		"ENV_CONFIG_PLATFORM='${ENV_CONFIG_PLATFORM}'\n" \
+		"ENV_CONFIG_COLORS='${ENV_CONFIG_COLORS}'\n" \
+		| sed -e "s;^[[:blank:]]*;;" -e "/^$/d" > ${ec_settings_file}
 
 	# readline - copy
-	mkdir -p "${EC_DST}/readline" || exit 1
-	cp ${EC_SRC}/readline/inputrc ${EC_DST}/readline/inputrc
+	mkdir -p "${ec_dir}/readline" || exit 1
+	cp ${ec_src}/readline/inputrc ${ec_dir}/readline/inputrc
 
 	# readline - source
 	eval EC_READLINERC_FILE='~/.inputrc'
@@ -100,20 +111,18 @@ if [[ ${EC_DRYRUN} == 'no' ]]; then
 		fi
 		sed \
 			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-			"${EC_SRC}/readline/inputrc-init" >> ${EC_READLINERC_FILE}
+			"${ec_src}/readline/inputrc-init" >> ${EC_READLINERC_FILE}
 	fi
 
 	# bash - copy
-	mkdir -p "${EC_DST}/bash" || exit 1
+	mkdir -p "${ec_dir}/bash" || exit 1
 	sed \
-		-e "s;^#ENV_CONFIG_PLATFORM=.*;ENV_CONFIG_PLATFORM=\'${ENV_CONFIG_PLATFORM}\';" \
-		-e "s;^#ENV_CONFIG_COLORS=.*;ENV_CONFIG_COLORS=\'${ENV_CONFIG_COLORS}\';" \
-		-e "s;^#ENV_CONFIG_DIR=.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
-		"${EC_SRC}/bash/bashrc" > ${EC_DST}/bash/bashrc || exit 1
+		-e "s;^#ENV_CONFIG_DIR=<path>.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
+		"${ec_src}/bash/bashrc" > ${ec_dir}/bash/bashrc || exit 1
 	# https://raw.github.com/git/git/master/contrib/completion/git-completion.bash
-	cp "${EC_SRC}/bash/git-completion.bash" "${EC_DST}/bash/git-completion.bash"
+	cp "${ec_src}/bash/git-completion.bash" "${ec_dir}/bash/git-completion.bash"
 	# https://svn.apache.org/repos/asf/subversion/trunk/tools/client-side/bash_completion
-	cp "${EC_SRC}/bash/svn-completion.bash" "${EC_DST}/bash/svn-completion.bash"
+	cp "${ec_src}/bash/svn-completion.bash" "${ec_dir}/bash/svn-completion.bash"
 
 	# bash - source
 	case ${ENV_CONFIG_PLATFORM} in
@@ -130,7 +139,7 @@ if [[ ${EC_DRYRUN} == 'no' ]]; then
 		fi
 		sed \
 			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-			"${EC_SRC}/bash/bashrc-init" >> ${EC_BASHRC_FILE}
+			"${ec_src}/bash/bashrc-init" >> ${EC_BASHRC_FILE}
 	fi
 fi
 

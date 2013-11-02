@@ -5,11 +5,12 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+ENV_CONFIG_BASH_PROMPT_GIT_BRANCH='yes'
+
+# hello kitty
 echo " /\_/\ "
 echo "( o.o )"
 echo " > ^ < "
-
-ENV_CONFIG_BASH_PROMPT_GIT_BRANCH='yes'
 
 # custom prompt
 if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
@@ -18,11 +19,11 @@ else
 	PS1='\W$ '
 fi
 if [[ ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH} == 'yes' ]]; then
-	ENV_CONFIG_GIT_BRANCH='$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1/")'
+	ec_bash_prompt_git_branch='$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1]/")'
 	if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
-		PS1="\[\033[0;34m\][${ENV_CONFIG_GIT_BRANCH}]\[\033[00m\] ${PS1}"
+		PS1="\[\033[0;34m\]${ec_bash_prompt_git_branch}\[\033[00m\] ${PS1}"
 	else
-		PS1="[${ENV_CONFIG_GIT_BRANCH}] ${PS1}"
+		PS1="${ec_bash_prompt_git_branch} ${PS1}"
 	fi
 fi
 

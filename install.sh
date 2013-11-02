@@ -11,9 +11,11 @@ else
 	exit 1
 fi
 
+# Config
+ENV_CONFIG_DIR=${ENV_CONFIG_DIR-'~/.env-config'}
+ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
+
 # Options
-ENV_CONFIG_DIR='~/.env-config'
-ENV_CONFIG_COLORS='yes'
 EC_SRC=$(dirname "${BASH_SOURCE[0]}")
 EC_VERBOSE='no'
 EC_DRYRUN='no'

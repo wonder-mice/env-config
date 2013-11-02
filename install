@@ -121,6 +121,7 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	cp ${ec_src}/readline/inputrc ${ec_dir}/readline/inputrc
 
 	# readline - source
+	# fixme: INPUTRC env var in bashrc file is used now to load inputrc
 	#eval EC_READLINERC_FILE='~/.inputrc'
 	#if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_READLINERC_FILE} &> /dev/null; then
 	#	# ${ENV_CONFIG_DIR} was not found in ${EC_READLINERC_FILE}

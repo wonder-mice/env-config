@@ -1,11 +1,17 @@
 #ENV_CONFIG_DIR=<path>
-#ENV_CONFIG_PLATFORM=(darwin|linux)
-#ENV_CONFIG_COLORS=(yes|no)
+export ENV_CONFIG_DIR
 
-# If not running interactively, don't do anything
+# if not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-ENV_CONFIG_BASH_PROMPT_GIT_BRANCH='yes'
+# load settings
+eval ec_dir=${ENV_CONFIG_DIR}
+if [[ -n ${ec_dir+#} && -f ${ec_dir}/settings ]]; then
+	source ${ec_dir}/settings
+fi
+ENV_CONFIG_PLATFORM=${ENV_CONFIG_PLATFORM-'unknown'}
+ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
+ENV_CONFIG_BASH_PROMPT_GIT_BRANCH=${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-'yes'}
 
 # hello kitty
 echo " /\_/\ "

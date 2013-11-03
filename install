@@ -1,31 +1,34 @@
 #!/bin/sh
 
 # detect platform
-ENV_CONFIG_PLATFORM='unknown'
+ec_platform='unknown'
 if [[ ${OSTYPE} == darwin* ]]; then
-	ENV_CONFIG_PLATFORM='darwin'
+	ec_platform='darwin'
 elif [[ ${OSTYPE} == linux* ]]; then
-	ENV_CONFIG_PLATFORM='linux'
+	ec_platform='linux'
 else
 	echo "Error: unknown OS type \"${OSTYPE}\""
 	exit 1
 fi
 
 # load settings
-eval ec_dir=${ENV_CONFIG_DIR}
-if [[ -n ${ec_dir+#} && -f ${ec_dir}/settings ]]; then
-	source ${ec_dir}/settings
+eval ec_dir="${ENV_CONFIG_DIR}"
+if [[ -n "${ec_dir+#}" && -f "${ec_dir}/settings" ]]; then
+	source "${ec_dir}/settings"
 fi
-ENV_CONFIG_DIR=${ENV_CONFIG_DIR-'~/.env-config'}
-ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
-ENV_CONFIG_BASH_PROMPT_GIT_BRANCH=${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-'yes'}
+ENV_CONFIG_PLATFORM="${ec_platform}"
+ENV_CONFIG_DIR="${ENV_CONFIG_DIR-'~/.env-config'}"
+ENV_CONFIG_COLORS="${ENV_CONFIG_COLORS-'yes'}"
+ENV_CONFIG_BASH_PROMPT_GIT_BRANCH="${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-'yes'}"
 
 # command line args
 function ec_set_feature_var {
-	case ${1} in
-		colors) ENV_CONFIG_COLORS="${2}";;
-		bash-prompt-git-branch) ENV_CONFIG_BASH_PROMPT_GIT_BRANCH="${2}";;
-		*) echo "Error: unknown feature \"${1}\""; exit 1;;
+	local feature="${1}"
+	local value="${2}"
+	case "${feature}" in
+		colors) ENV_CONFIG_COLORS="${value}";;
+		bash-prompt-git-branch) ENV_CONFIG_BASH_PROMPT_GIT_BRANCH="${value}";;
+		*) echo "Error: unknown feature \"${feature}\""; exit 1;;
 	esac
 }
 ec_src=$(dirname "${BASH_SOURCE[0]}")
@@ -101,6 +104,22 @@ if [[ ${ec_verbose} == 'yes' ]]; then
 	echo "Dryrun:                      \"${ec_dryrun}\""
 fi
 
+# install / update
+function ec_append_init_script {
+	local init_script="${1}"
+	local dst_file="${2}"
+	if ! grep -Fq 'env-config+magic' ${dst_file} &> /dev/null; then
+		# 'env-config+magic' was not found in ${dst_file}
+		# It is OK to append init script.
+		if [[ -s ${dst_file} ]]; then
+			# If ${dst_file} not empty, append extra empty line for nice style
+			echo >> ${dst_file};
+		fi
+		sed \
+			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
+			"${init_script}" >> ${dst_file}
+	fi
+}
 if [[ ${ec_dryrun} == 'no' ]]; then
 	mkdir -p "${ec_dir}" || exit 1
 
@@ -112,23 +131,10 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 		"ENV_CONFIG_BASH_PROMPT_GIT_BRANCH='${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH}'\n" \
 		| sed -e "s;^[[:blank:]]*;;" -e "/^$/d" > ${ec_settings_file}
 
-	# readline - copy
+	# readline
 	mkdir -p "${ec_dir}/readline" || exit 1
 	cp ${ec_src}/readline/inputrc ${ec_dir}/readline/inputrc
-
-	# readline - source
-	eval ec_readlinerc_file='~/.inputrc'
-	if ! grep -Fq "${ENV_CONFIG_DIR}" ${ec_readlinerc_file} &> /dev/null; then
-		# ${ENV_CONFIG_DIR} was not found in ${ec_readlinerc_file}
-		# It is OK to append init script.
-		# If ${ec_readlinerc_file} not empty, append extra new line for extra style
-		if [[ -s ${ec_readlinerc_file} ]]; then
-			echo >> ${ec_readlinerc_file};
-		fi
-		sed \
-			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-			"${ec_src}/readline/inputrc-init" >> ${ec_readlinerc_file}
-	fi
+	ec_append_init_script "${ec_src}/readline/inputrc-init" ~/.inputrc
 
 	# bash - copy
 	mkdir -p "${ec_dir}/bash" || exit 1
@@ -144,19 +150,9 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	case ${ENV_CONFIG_PLATFORM} in
 		'darwin') eval ec_bashrc_file='~/.bash_profile';;
 		'linux') eval ec_bashrc_file='~/.bashrc';;
-		*) echo "Error: unknown platform ${ENV_CONFIG_PLATFORM}"; exit 1;;
+		*) echo "Error: unknown platform \"${ENV_CONFIG_PLATFORM}\""; exit 1;;
 	esac
-	if ! grep -Fq "${ENV_CONFIG_DIR}" ${ec_bashrc_file} &> /dev/null; then
-		# ${ENV_CONFIG_DIR} was not found in ${ec_bashrc_file}
-		# It is OK to append init script.
-		# If ${ec_bashrc_file} not empty, append extra new line for extra style
-		if [[ -s ${ec_bashrc_file} ]]; then
-			echo >> ${ec_bashrc_file};
-		fi
-		sed \
-			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-			"${ec_src}/bash/bashrc-init" >> ${ec_bashrc_file}
-	fi
+	ec_append_init_script "${ec_src}/bash/bashrc-init" "${ec_bashrc_file}"
 
 	# vim - copy
 	mkdir -p "~/.vim" || exit 1
@@ -173,18 +169,7 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	${ec_src}/vim/vimrc-setup || exit 1
 
 	# vim - source
-	eval ec_vimrc_file='~/.vimrc'
-	if ! grep -Fq "${ENV_CONFIG_DIR}" ${ec_vimrc_file} &> /dev/null; then
-		# ${ENV_CONFIG_DIR} was not found in ${ec_vimrc_file}
-		# It is OK to append init script.
-		# If ${ec_vimrc_file} not empty, append extra new line for extra style
-		if [[ -s ${ec_vimrc_file} ]]; then
-			echo >> ${ec_vimrc_file};
-		fi
-		sed \
-			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-			"${ec_src}/vim/vimrc-init" >> ${ec_vimrc_file}
-	fi
+	ec_append_init_script "${ec_src}/vim/vimrc-init" ~/.vimrc
 fi
 
 echo "Done!"

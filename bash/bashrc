@@ -11,7 +11,6 @@ if [[ -n ${ec_dir+#} && -f ${ec_dir}/settings ]]; then
 fi
 ENV_CONFIG_PLATFORM=${ENV_CONFIG_PLATFORM-'unknown'}
 ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
-ENV_CONFIG_READLINE=${ENV_CONFIG_READLINE-'yes'}
 ENV_CONFIG_BASH_PROMPT_GIT_BRANCH=${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-'yes'}
 
 # hello kitty
@@ -20,9 +19,7 @@ echo "( o.o )"
 echo " > ^ < "
 
 # readline
-if [[ ${ENV_CONFIG_READLINE} == 'yes' ]]; then
-	INPUTRC=${ec_dir}/readline/inputrc
-fi
+INPUTRC=~/.inputrc
 
 # custom prompt
 if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
@@ -31,12 +28,11 @@ else
 	PS1='\W$ '
 fi
 if [[ ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH} == 'yes' ]]; then
-	ec_bash_prompt_git_branch='$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1]/")'
+	ec_bash_prompt_git_branch='$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1] /")'
 	if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
-		PS1="\[\033[0;34m\]${ec_bash_prompt_git_branch}\[\033[00m\] ${PS1}"
-	else
-		PS1="${ec_bash_prompt_git_branch} ${PS1}"
+		ec_bash_prompt_git_branch="\[\033[0;34m\]${ec_bash_prompt_git_branch}\[\033[00m\]"
 	fi
+	PS1="${ec_bash_prompt_git_branch}${PS1}"
 fi
 
 # colorize commands

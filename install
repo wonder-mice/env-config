@@ -18,14 +18,12 @@ if [[ -n ${ec_dir+#} && -f ${ec_dir}/settings ]]; then
 fi
 ENV_CONFIG_DIR=${ENV_CONFIG_DIR-'~/.env-config'}
 ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
-ENV_CONFIG_READLINE=${ENV_CONFIG_READLINE-'yes'}
 ENV_CONFIG_BASH_PROMPT_GIT_BRANCH=${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-'yes'}
 
 # command line args
 function ec_set_feature_var {
 	case ${1} in
 		colors) ENV_CONFIG_COLORS="${2}";;
-		readline) ENV_CONFIG_READLINE="${2}";;
 		bash-prompt-git-branch) ENV_CONFIG_BASH_PROMPT_GIT_BRANCH="${2}";;
 		*) echo "Error: unknown feature \"${1}\""; exit 1;;
 	esac
@@ -99,7 +97,6 @@ if [[ ${ec_verbose} == 'yes' ]]; then
 	echo "Install dir:                 \"${ENV_CONFIG_DIR}\" (\"${ec_dir}\")"
 	echo "Platform:                    \"${ENV_CONFIG_PLATFORM}\""
 	echo "Colors:                      \"${ENV_CONFIG_COLORS}\""
-	echo "Readline:                    \"${ENV_CONFIG_READLINE}\""
 	echo "Bash prompt with git branch: \"${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH}\""
 	echo "Dryrun:                      \"${ec_dryrun}\""
 fi
@@ -112,7 +109,6 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	echo \
 		"ENV_CONFIG_PLATFORM='${ENV_CONFIG_PLATFORM}'\n" \
 		"ENV_CONFIG_COLORS='${ENV_CONFIG_COLORS}'\n" \
-		"ENV_CONFIG_READLINE='${ENV_CONFIG_READLINE}'\n" \
 		"ENV_CONFIG_BASH_PROMPT_GIT_BRANCH='${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH}'\n" \
 		| sed -e "s;^[[:blank:]]*;;" -e "/^$/d" > ${ec_settings_file}
 
@@ -121,19 +117,18 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	cp ${ec_src}/readline/inputrc ${ec_dir}/readline/inputrc
 
 	# readline - source
-	# fixme: INPUTRC env var in bashrc file is used now to load inputrc
-	#eval EC_READLINERC_FILE='~/.inputrc'
-	#if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_READLINERC_FILE} &> /dev/null; then
-	#	# ${ENV_CONFIG_DIR} was not found in ${EC_READLINERC_FILE}
-	#	# It is OK to append init script.
-	#	# If ${EC_READLINERC_FILE} not empty, append extra new line for extra style
-	#	if [[ -s ${EC_READLINERC_FILE} ]]; then
-	#		echo >> ${EC_READLINERC_FILE};
-	#	fi
-	#	sed \
-	#		-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-	#		"${ec_src}/readline/inputrc-init" >> ${EC_READLINERC_FILE}
-	#fi
+	eval ec_readlinerc_file='~/.inputrc'
+	if ! grep -Fq "${ENV_CONFIG_DIR}" ${ec_readlinerc_file} &> /dev/null; then
+		# ${ENV_CONFIG_DIR} was not found in ${ec_readlinerc_file}
+		# It is OK to append init script.
+		# If ${ec_readlinerc_file} not empty, append extra new line for extra style
+		if [[ -s ${ec_readlinerc_file} ]]; then
+			echo >> ${ec_readlinerc_file};
+		fi
+		sed \
+			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
+			"${ec_src}/readline/inputrc-init" >> ${ec_readlinerc_file}
+	fi
 
 	# bash - copy
 	mkdir -p "${ec_dir}/bash" || exit 1
@@ -147,20 +142,48 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 
 	# bash - source
 	case ${ENV_CONFIG_PLATFORM} in
-		'darwin') eval EC_BASHRC_FILE='~/.bash_profile';;
-		'linux') eval EC_BASHRC_FILE='~/.bashrc';;
+		'darwin') eval ec_bashrc_file='~/.bash_profile';;
+		'linux') eval ec_bashrc_file='~/.bashrc';;
 		*) echo "Error: unknown platform ${ENV_CONFIG_PLATFORM}"; exit 1;;
 	esac
-	if ! grep -Fq "${ENV_CONFIG_DIR}" ${EC_BASHRC_FILE} &> /dev/null; then
-		# ${ENV_CONFIG_DIR} was not found in ${EC_BASHRC_FILE}
+	if ! grep -Fq "${ENV_CONFIG_DIR}" ${ec_bashrc_file} &> /dev/null; then
+		# ${ENV_CONFIG_DIR} was not found in ${ec_bashrc_file}
 		# It is OK to append init script.
-		# If ${EC_BASHRC_FILE} not empty, append extra new line for extra style
-		if [[ -s ${EC_BASHRC_FILE} ]]; then
-			echo >> ${EC_BASHRC_FILE};
+		# If ${ec_bashrc_file} not empty, append extra new line for extra style
+		if [[ -s ${ec_bashrc_file} ]]; then
+			echo >> ${ec_bashrc_file};
 		fi
 		sed \
 			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
-			"${ec_src}/bash/bashrc-init" >> ${EC_BASHRC_FILE}
+			"${ec_src}/bash/bashrc-init" >> ${ec_bashrc_file}
+	fi
+
+	# vim - copy
+	mkdir -p "~/.vim" || exit 1
+	cp ${ec_src}/vim/vimrc ~/.vim/vimrc
+	mkdir -p ~/.vim/plugin || exit 1
+	# https://raw.github.com/ciaranm/securemodelines/master/plugin/securemodelines.vim
+	cp ${ec_src}/vim/plugin/securemodelines.vim ~/.vim/plugin/securemodelines.vim
+	# https://raw.github.com/xianxu/vim-settings/master/.vim/plugin/file_line.vim
+	cp ${ec_src}/vim/plugin/file_line.vim ~/.vim/plugin/file_line.vim
+	# https://raw.github.com/vim-scripts/a.vim/master/plugin/a.vim
+	cp ${ec_src}/vim/plugin/a.vim ~/.vim/plugin/a.vim
+
+	# vim - setup
+	${ec_src}/vim/vimrc-setup || exit 1
+
+	# vim - source
+	eval ec_vimrc_file='~/.vimrc'
+	if ! grep -Fq "${ENV_CONFIG_DIR}" ${ec_vimrc_file} &> /dev/null; then
+		# ${ENV_CONFIG_DIR} was not found in ${ec_vimrc_file}
+		# It is OK to append init script.
+		# If ${ec_vimrc_file} not empty, append extra new line for extra style
+		if [[ -s ${ec_vimrc_file} ]]; then
+			echo >> ${ec_vimrc_file};
+		fi
+		sed \
+			-e "s;\${ENV_CONFIG_DIR};${ENV_CONFIG_DIR};" \
+			"${ec_src}/vim/vimrc-init" >> ${ec_vimrc_file}
 	fi
 fi
 

@@ -1,2 +1,2 @@
-# env-config (https://github.com/wonder-mice/env-config)
+# env-config+magic (https://github.com/wonder-mice/env-config)
 source ${ENV_CONFIG_DIR}/bash/bashrc

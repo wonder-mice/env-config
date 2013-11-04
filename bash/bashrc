@@ -2,9 +2,14 @@
 [ -z "$PS1" ] && return
 
 # load settings
-eval ec_dir=${ENV_CONFIG_DIR}
-if [[ -n ${ec_dir+#} && -f ${ec_dir}/settings ]]; then
-	source ${ec_dir}/settings
+if [[ -z "${ENV_CONFIG_DIR+#}" ]]; then
+	echo "Warning: ENV_CONFIG_DIR is not set (https://github.com/wonder-mice/env-config)"
+	return 1
+fi
+if [[ -f "${ENV_CONFIG_DIR}/settings" ]]; then
+	source "${ENV_CONFIG_DIR}/settings"
+else
+	echo "Warning: no file \"${ENV_CONFIG_DIR}/settings\", using defaults (https://github.com/wonder-mice/env-config)"
 fi
 ENV_CONFIG_PLATFORM=${ENV_CONFIG_PLATFORM-'unknown'}
 ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}

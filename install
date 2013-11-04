@@ -138,9 +138,7 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 
 	# bash - copy
 	mkdir -p "${ec_dir}/bash" || exit 1
-	sed \
-		-e "s;^#ENV_CONFIG_DIR=<path>.*;ENV_CONFIG_DIR=\'${ENV_CONFIG_DIR}\';" \
-		"${ec_src}/bash/bashrc" > ${ec_dir}/bash/bashrc || exit 1
+	cp "${ec_src}/bash/bashrc" "${ec_dir}/bash/bashrc"
 	# https://raw.github.com/git/git/master/contrib/completion/git-completion.bash
 	cp "${ec_src}/bash/git-completion.bash" "${ec_dir}/bash/git-completion.bash"
 	# https://svn.apache.org/repos/asf/subversion/trunk/tools/client-side/bash_completion

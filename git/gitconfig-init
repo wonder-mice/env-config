@@ -1,0 +1,3 @@
+# env-config+magic (https://github.com/wonder-mice/env-config)
+[include]
+	path = <[ENV_CONFIG_DIR]>/git/gitconfig

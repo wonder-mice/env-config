@@ -1,3 +1,7 @@
+* Fix defaults
+Usage of ${var-default} substution sucks when default has spaces or other
+complex things, and if put in "", "" will be part of substitution.
+
 * Maybe restrictions on ENC_CONFIG_DIR path can be removed
 Looks like there is no reason to check for complex substitutions and spaces.
 No reason for path to be absolute.

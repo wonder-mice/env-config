@@ -13,9 +13,9 @@ else
 	echo "Warning: no file \"${ec_dir}/settings\", using defaults (https://github.com/wonder-mice/env-config)"
 	ec_dir=
 fi
-ENV_CONFIG_PLATFORM=${ENV_CONFIG_PLATFORM-'unknown'}
-ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
-ENV_CONFIG_BASH_PROMPT_GIT_BRANCH=${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-'yes'}
+ENV_CONFIG_PLATFORM=${ENV_CONFIG_PLATFORM-unknown}
+ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-yes}
+ENV_CONFIG_BASH_PROMPT_GIT_BRANCH=${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-yes}
 
 # hello kitty
 echo " /\_/\ "

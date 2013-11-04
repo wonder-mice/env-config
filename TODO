@@ -5,6 +5,8 @@ complex things, and if put in "", "" will be part of substitution.
 * What happens with settings file on linux?
 New lines are not expanded.
 
+* Add ag (silver search) and ctags (the good one)
+
 * Use unset to remove temp variables
 
 * Maybe restrictions on ENC_CONFIG_DIR path can be removed

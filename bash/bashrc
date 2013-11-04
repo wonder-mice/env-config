@@ -6,10 +6,12 @@ if [[ -z "${ENV_CONFIG_DIR+#}" ]]; then
 	echo "Warning: ENV_CONFIG_DIR is not set (https://github.com/wonder-mice/env-config)"
 	return 1
 fi
-if [[ -f "${ENV_CONFIG_DIR}/settings" ]]; then
-	source "${ENV_CONFIG_DIR}/settings"
+eval ec_dir="${ENV_CONFIG_DIR}"
+if [[ -f "${ec_dir}/settings" ]]; then
+	source "${ec_dir}/settings"
 else
-	echo "Warning: no file \"${ENV_CONFIG_DIR}/settings\", using defaults (https://github.com/wonder-mice/env-config)"
+	echo "Warning: no file \"${ec_dir}/settings\", using defaults (https://github.com/wonder-mice/env-config)"
+	ec_dir=
 fi
 ENV_CONFIG_PLATFORM=${ENV_CONFIG_PLATFORM-'unknown'}
 ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-'yes'}
@@ -48,8 +50,9 @@ if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
 	fi
 fi
 
-# git completion
-eval source ${ENV_CONFIG_DIR}/bash/git-completion.bash
-
-# svn completion
-eval source ${ENV_CONFIG_DIR}/bash/svn-completion.bash
+if [[ -n "${ec_dir}" ]]; then
+	# git completion
+	source "${ec_dir}/bash/git-completion.bash"
+	# svn completion
+	source "${ec_dir}/bash/svn-completion.bash"
+fi

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# create dir for swap files
+mkdir -p ~/.vim/backup || exit 1
+# create dir for backup files
+mkdir -p ~/.vim/swap || exit 1

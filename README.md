@@ -12,7 +12,7 @@ This will create folder ~/.env-config that holds all installed configuration fil
 
 Following files will be modified by appending small (2-3 lines) piece of
 initialization code:
-~/.inputrc
-~/.bashrc
-~/.vimrc
-~/.gitconfig
+* ~/.inputrc
+* ~/.bashrc
+* ~/.vimrc
+* ~/.gitconfig

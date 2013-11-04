@@ -7,6 +7,8 @@ Oh, forgot about readline... No still need that stuff :(
 Some array of structs will be good. This will allow to annotate options and to
 automatically generate help, default values, settings and features processing.
 
+* Figure out how readline vi mode can be an install option
+
 ~/Backup/vim
 ~/.vim/backup/
 ~/.vim/swap/

@@ -114,3 +114,5 @@ au BufNewFile,BufRead *.mm set filetype=objc
 set backupdir=~/.vim/backup
 set dir=~/.vim/swap
 set swapfile
+
+let &rtp = printf('%s/vim,%s,%s/vim/after', g:env_config_dir, &rtp, g:env_config_dir)

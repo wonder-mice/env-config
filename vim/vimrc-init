@@ -1,2 +1,3 @@
 " env-config+magic (https://github.com/wonder-mice/env-config)
+let g:env_config_dir = '<[ENV_CONFIG_DIR]>'
 source <[ENV_CONFIG_DIR]>/vim/vimrc

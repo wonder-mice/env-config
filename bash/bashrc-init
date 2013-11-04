@@ -1,2 +1,3 @@
 # env-config+magic (https://github.com/wonder-mice/env-config)
+export ENV_CONFIG_DIR=<[ENV_CONFIG_DIR]>
 source ${ENV_CONFIG_DIR}/bash/bashrc

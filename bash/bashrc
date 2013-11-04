@@ -1,6 +1,3 @@
-#ENV_CONFIG_DIR=<path>
-export ENV_CONFIG_DIR
-
 # if not running interactively, don't do anything
 [ -z "$PS1" ] && return
 

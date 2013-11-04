@@ -168,6 +168,11 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 
 	# vim - source
 	ec_append_init_script "${ec_src}/vim/vimrc-init" ~/.vimrc
+
+	# git
+	mkdir -p "${ec_dir}/git" || exit 1
+	cp ${ec_src}/git/gitconfig ${ec_dir}/git/gitconfig || exit 1
+	ec_append_init_script "${ec_src}/git/gitconfig-init" ~/.gitconfig
 fi
 
 echo "Done!"

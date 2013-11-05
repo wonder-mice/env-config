@@ -126,11 +126,10 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 
 	# settings file
 	ec_settings_file="${ec_dir}/settings"
-	echo \
-		"ENV_CONFIG_PLATFORM='${ENV_CONFIG_PLATFORM}'\n" \
-		"ENV_CONFIG_COLORS='${ENV_CONFIG_COLORS}'\n" \
-		"ENV_CONFIG_BASH_PROMPT_GIT_BRANCH='${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH}'\n" \
-		| sed -e "s;^[[:blank:]]*;;" -e "/^$/d" > ${ec_settings_file} || exit 1
+	rm -f "${ec_settings_file}"
+	echo "ENV_CONFIG_PLATFORM='${ENV_CONFIG_PLATFORM}'" >> ${ec_settings_file} || exit 1
+	echo "ENV_CONFIG_COLORS='${ENV_CONFIG_COLORS}'" >> ${ec_settings_file} || exit 1
+	echo "ENV_CONFIG_BASH_PROMPT_GIT_BRANCH='${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH}'" >> ${ec_settings_file} || exit 1
 
 	# readline
 	mkdir -p "${ec_dir}/readline" || exit 1

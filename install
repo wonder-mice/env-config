@@ -2,9 +2,9 @@
 
 # detect platform
 ec_platform='unknown'
-if [[ "${OSTYPE}" == darwin* ]]; then
+if [[ ${OSTYPE} == darwin* ]]; then
 	ec_platform='darwin'
-elif [[ "${OSTYPE}" == linux* ]]; then
+elif [[ ${OSTYPE} == linux* ]]; then
 	ec_platform='linux'
 else
 	echo "Error: unknown OS type \"${OSTYPE}\""
@@ -13,13 +13,13 @@ fi
 
 # load settings
 eval ec_dir="${ENV_CONFIG_DIR}"
-if [[ -n "${ec_dir+#}" && -f "${ec_dir}/settings" ]]; then
+if [[ -n ${ec_dir} && -f "${ec_dir}/settings" ]]; then
 	source "${ec_dir}/settings"
 fi
 ENV_CONFIG_PLATFORM="${ec_platform}"
-ENV_CONFIG_DIR="${ENV_CONFIG_DIR-~/.env-config}"
-ENV_CONFIG_COLORS="${ENV_CONFIG_COLORS-yes}"
-ENV_CONFIG_BASH_PROMPT_GIT_BRANCH="${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-yes}"
+: ${ENV_CONFIG_DIR:='~/.env-config'}
+: ${ENV_CONFIG_COLORS:='yes'}
+: ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH:='yes'}
 
 # command line args
 function ec_set_feature_var {
@@ -35,7 +35,7 @@ ec_src=$(dirname "${BASH_SOURCE[0]}")
 ec_verbose='no'
 ec_dryrun='no'
 while getopts ":hvty:n:d:" OPT; do
-	case ${OPT} in
+	case "${OPT}" in
 		h)
 			echo "Options are:"
 			echo "    -h           - show this help"
@@ -80,16 +80,16 @@ done
 # check install dir path
 eval ec_dir="${ENV_CONFIG_DIR}"
 ec_dir_check=$(printf '%q' "${ENV_CONFIG_DIR}")
-if [[ "${ec_dir_check}" != "${ENV_CONFIG_DIR}" ]]; then
+if [[ ${ec_dir_check} != ${ENV_CONFIG_DIR} ]]; then
 	echo "Error: install dir \"${ENV_CONFIG_DIR}\" must not contain spaces, variables or other expandable tokens (except ~)"
 	exit 1
 fi
 ec_dir_check="${ec_dir_check/#~/${HOME}}"
-if [[ "${ec_dir_check}" != "${ec_dir}" ]]; then
+if [[ ${ec_dir_check} != ${ec_dir} ]]; then
 	echo "Error: install dir \"${ENV_CONFIG_DIR}\" requires complex substitution that is not supported"
 	exit 1
 fi
-if [[ "${ec_dir}" != /* ]]; then
+if [[ ${ec_dir} != /* ]]; then
 	echo "Error: install dir \"${ENV_CONFIG_DIR}\" doesn't evaluate to absolute path (\"${ec_dir}\")"
 	exit 1
 fi
@@ -104,14 +104,13 @@ if [[ ${ec_verbose} == 'yes' ]]; then
 	echo "Dryrun:                      \"${ec_dryrun}\""
 fi
 
-# install / update
 function ec_append_init_script {
 	local init_script="${1}"
 	local dst_file="${2}"
 	if ! grep -Fq 'env-config+magic' "${dst_file}" &> /dev/null; then
 		# 'env-config+magic' was not found in ${dst_file}
 		# It is OK to append init script.
-		if [[ -s "${dst_file}" ]]; then
+		if [[ -s ${dst_file} ]]; then
 			# If ${dst_file} not empty, append extra empty line for nice style
 			echo >> "${dst_file}" || exit 1
 		fi
@@ -120,6 +119,8 @@ function ec_append_init_script {
 			"${init_script}" >> "${dst_file}" || exit 1
 	fi
 }
+
+# install / update
 if [[ ${ec_dryrun} == 'no' ]]; then
 	mkdir -p "${ec_dir}" || exit 1
 
@@ -133,7 +134,7 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 
 	# readline
 	mkdir -p "${ec_dir}/readline" || exit 1
-	cp ${ec_src}/readline/inputrc ${ec_dir}/readline/inputrc || exit 1
+	cp "${ec_src}/readline/inputrc" "${ec_dir}/readline/inputrc" || exit 1
 	ec_append_init_script "${ec_src}/readline/inputrc-init" ~/.inputrc
 
 	# bash - copy
@@ -154,24 +155,24 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 
 	# vim - copy
 	mkdir -p "${ec_dir}/vim" || exit 1
-	cp ${ec_src}/vim/vimrc "${ec_dir}/vim/vimrc" || exit 1
+	cp "${ec_src}/vim/vimrc" "${ec_dir}/vim/vimrc" || exit 1
 	mkdir -p "${ec_dir}/vim/plugin" || exit 1
 	# https://raw.github.com/ciaranm/securemodelines/master/plugin/securemodelines.vim
-	cp ${ec_src}/vim/plugin/securemodelines.vim ${ec_dir}/vim/plugin/securemodelines.vim || exit 1
+	cp "${ec_src}/vim/plugin/securemodelines.vim" "${ec_dir}/vim/plugin/securemodelines.vim" || exit 1
 	# https://raw.github.com/xianxu/vim-settings/master/.vim/plugin/file_line.vim
-	cp ${ec_src}/vim/plugin/file_line.vim ${ec_dir}/vim/plugin/file_line.vim || exit 1
+	cp "${ec_src}/vim/plugin/file_line.vim" "${ec_dir}/vim/plugin/file_line.vim" || exit 1
 	# https://raw.github.com/vim-scripts/a.vim/master/plugin/a.vim
-	cp ${ec_src}/vim/plugin/a.vim ${ec_dir}/vim/plugin/a.vim || exit 1
+	cp "${ec_src}/vim/plugin/a.vim" "${ec_dir}/vim/plugin/a.vim" || exit 1
 
 	# vim - setup
-	${ec_src}/vim/vimrc-setup || exit 1
+	"${ec_src}/vim/vimrc-setup" || exit 1
 
 	# vim - source
 	ec_append_init_script "${ec_src}/vim/vimrc-init" ~/.vimrc
 
 	# git
 	mkdir -p "${ec_dir}/git" || exit 1
-	cp ${ec_src}/git/gitconfig ${ec_dir}/git/gitconfig || exit 1
+	cp "${ec_src}/git/gitconfig" "${ec_dir}/git/gitconfig" || exit 1
 	ec_append_init_script "${ec_src}/git/gitconfig-init" ~/.gitconfig
 fi
 

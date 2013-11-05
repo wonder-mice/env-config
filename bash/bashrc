@@ -2,20 +2,26 @@
 [ -z "$PS1" ] && return
 
 # load settings
-if [[ -z "${ENV_CONFIG_DIR+#}" ]]; then
+if [[ -z ${ENV_CONFIG_DIR} ]]; then
 	echo "Warning: ENV_CONFIG_DIR is not set (https://github.com/wonder-mice/env-config)"
+	# we can try to guess, but will not - fix your environment first, then play with it
+	#ENV_CONFIG_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
 	return 1
 fi
 eval ec_dir="${ENV_CONFIG_DIR}"
-if [[ -f "${ec_dir}/settings" ]]; then
-	source "${ec_dir}/settings"
-else
-	echo "Warning: no file \"${ec_dir}/settings\", using defaults (https://github.com/wonder-mice/env-config)"
-	ec_dir=
+if [[ ! -f "${ec_dir}/settings" ]]; then
+	echo "Warning: no settings file \"${ec_dir}/settings\" (https://github.com/wonder-mice/env-config)"
+	return 1
 fi
-ENV_CONFIG_PLATFORM=${ENV_CONFIG_PLATFORM-unknown}
-ENV_CONFIG_COLORS=${ENV_CONFIG_COLORS-yes}
-ENV_CONFIG_BASH_PROMPT_GIT_BRANCH=${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH-yes}
+source "${ec_dir}/settings"
+if [[ -z ${ENV_CONFIG_PLATFORM} ]]; then
+	echo "Warning: ENV_CONFIG_PLATFORM is not set (https://github.com/wonder-mice/env-config)"
+	# again, it is possible to detect platform here, but we will not - file must exist
+	return 1
+fi
+# defaults - mostly to document available options
+: ${ENV_CONFIG_COLORS:='yes"}
+: ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH:='yes'}
 
 # hello kitty
 echo " /\_/\ "
@@ -50,9 +56,7 @@ if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
 	fi
 fi
 
-if [[ -n "${ec_dir}" ]]; then
-	# git completion
-	source "${ec_dir}/bash/git-completion.bash"
-	# svn completion
-	source "${ec_dir}/bash/svn-completion.bash"
-fi
+# git completion
+source "${ec_dir}/bash/git-completion.bash"
+# svn completion
+source "${ec_dir}/bash/svn-completion.bash"

@@ -20,7 +20,7 @@ if [[ -z ${ENV_CONFIG_PLATFORM} ]]; then
 	return 1
 fi
 # defaults - mostly to document available options
-: ${ENV_CONFIG_COLORS:='yes"}
+: ${ENV_CONFIG_COLORS:='yes'}
 : ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH:='yes'}
 
 # hello kitty

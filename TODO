@@ -1,7 +1,3 @@
-* Bug - Fix defaults
-Usage of ${var-default} substution sucks when default has spaces or other
-complex things, and if put in "", "" will be part of substitution.
-
 * Bug - What happens with settings file on linux?
 New lines are not expanded.
 

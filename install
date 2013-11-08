@@ -176,6 +176,7 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 
 	# tools
 	mkdir -p "${ec_dir}/bin" || exit 1
+	cp "${ec_src}/tools/x" "${ec_dir}/bin/x" || exit 1
 fi
 
 echo "Done!"

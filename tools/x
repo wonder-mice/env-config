@@ -1,2 +1,20 @@
 #!/bin/bash
 
+function usage {
+	echo "Usage:"
+	echo "    x [command ...]  - execute command with arguments and number output lines"
+	echo "    x [-NUM]         - print NUM line from previous output"
+	exit 1
+}
+
+if [[ 0 == $# ]]; then
+	usage
+fi
+eval p="~/.env-config-x"
+if [[ '-' == ${1:0:1} ]]; then
+	n=${1:1}
+	n=$(( n + 1 ))
+	sed -n "${n}p" "${p}" | tr -d '\r'
+	exit $?
+fi
+script -q "${p}" ${@} | nl -p -b a -v 0 -w 4 -s " | "

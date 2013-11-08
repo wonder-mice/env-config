@@ -173,6 +173,9 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	mkdir -p "${ec_dir}/git" || exit 1
 	cp "${ec_src}/git/gitconfig" "${ec_dir}/git/gitconfig" || exit 1
 	ec_append_init_script "${ec_src}/git/gitconfig-init" ~/.gitconfig
+
+	# tools
+	mkdir -p "${ec_dir}/bin" || exit 1
 fi
 
 echo "Done!"

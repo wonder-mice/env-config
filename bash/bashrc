@@ -28,6 +28,11 @@ echo " /\_/\ "
 echo "( o.o )"
 echo " > ^ < "
 
+# path
+if [[ -d "${ec_dir}/bin" ]]; then
+	PATH=${ec_dir}/bin:${PATH}
+fi
+
 # readline
 INPUTRC=~/.inputrc
 

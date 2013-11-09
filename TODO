@@ -1,5 +1,3 @@
-* Feature - Use unset to remove temp variables
-
 * Feature - Add annotated documentation support
 Special type of comment, like
 # @env-config-doc Current git branch name will be shown in bash command prompt

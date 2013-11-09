@@ -1,5 +1,3 @@
-* Bug - Write comments
-
 * Bug/Feature - Conditional annotated documentation
 Don't want to see that bash has git branch in prompt even when this option was disabled.
 But it is hard to implement all complexity of conditional logic.

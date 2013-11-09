@@ -65,3 +65,6 @@ fi
 source "${ec_dir}/bash/git-completion.bash"
 # svn completion
 source "${ec_dir}/bash/svn-completion.bash"
+
+unset ec_dir
+unset ec_bash_prompt_git_branch

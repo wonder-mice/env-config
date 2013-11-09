@@ -1,20 +1,51 @@
 #!/bin/bash
 
+# Tool can operate in two modes:
+# - Take coomand output and print it numerating each line
+# - Print N-th line from previously numerated output
+# That can be down in different ways:
+#	$ x command args
+#		+ Command specific processing possible
+#		+ Colors support possible
+#		- Aliases not supported
+#		- Bash complition not supported
+#	$ command args | x
+#		+ Alias support
+#		+ Bash complition support
+#		- Command specific processing impossible
+#		- Colors support not possible
+# For now we will take second approach and see.
+
 function usage {
 	echo "Usage:"
-	echo "    x [command ...]  - execute command with arguments and number output lines"
-	echo "    x [-NUM]         - print NUM line from previous output"
+	echo "    x    - print numerated lines of input and remember them"
+	echo "    x N  - print N-th line from previously numerated output"
+	echo ""
+	echo "Example:"
+	echo "\$ find . -name \"*.c\" | x"
+	echo "   1 | ./src/main.c"
+	echo "   2 | ./src/opts.c"
+	echo "   3 | ./src/sock.c"
+	echo "   4 | ./src/help.c"
+	echo "\$ vim $(x 3) # edit ./src/sock.c in vim"
 	exit 1
 }
 
+eval xfile="~/.tool-x"
+
+# numerate and save input if no arguments
 if [[ 0 == $# ]]; then
+	echo "# Created by x tool (https://github.com/wonder-mice/env-config)" > "${xfile}"
+	tee -a "${xfile}" | nl -p -b a -v 1 -w 4 -s " | "
+	exit 0
+fi
+
+# print n-th line from saved output
+n="${1}"
+if [[ 0 -ge ${n} ]]; then
 	usage
+	exit 1
 fi
-eval p="~/.env-config-x"
-if [[ '-' == ${1:0:1} ]]; then
-	n=${1:1}
-	n=$(( n + 1 ))
-	sed -n "${n}p" "${p}" | tr -d '\r'
-	exit $?
-fi
-script -q "${p}" ${@} | nl -p -b a -v 0 -w 4 -s " | "
+n=$(( n + 1 ))
+sed -n "${n}p" "${xfile}"
+exit $?

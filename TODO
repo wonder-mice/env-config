@@ -1,16 +1,18 @@
-* Write comments
+* Bug - Write comments
 
-* Feature - Add annotated documentation support
-Special type of comment, like
-# @env-config-doc Current git branch name will be shown in bash command prompt
-or
-" @env-config-doc Using :A can switch between source and header files
-Need to support conditional comments (when feature not enabled)
+* Bug/Feature - Conditional annotated documentation
+Don't want to see that bash has git branch in prompt even when this option was disabled.
+But it is hard to implement all complexity of conditional logic.
+Maybe some simple xml-like sed prefilter? For example, will leave lines between this two
+only when colors are disabled:
+# <no-colors>
+# </no-colors>
 
 * Feature - Figure out how readline vi mode can be an install option
 
-* Feature - Will be nice to put all ENV_CONFIG_XXX settings in one place in install script
-Some array of structs will be good. This will allow to annotate options and to
+* Feature - Will be nice to put all ENV_CONFIG_XXX settings with in one place in install script
+Want to put all information (feature name, description, corresponding shell var) about settings
+in one place. Some array of structs will be good. This will allow to annotate options and to
 automatically generate help, default values, settings and features processing.
 
 * Feature - Maybe restrictions on ENC_CONFIG_DIR path can be removed

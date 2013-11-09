@@ -11,17 +11,18 @@ else
 	exit 1
 fi
 
-# load settings
+# load existing settings (usually ~/.env-config/settings)
 eval ec_dir="${ENV_CONFIG_DIR}"
 if [[ -n ${ec_dir} && -f "${ec_dir}/settings" ]]; then
 	source "${ec_dir}/settings"
 fi
 ENV_CONFIG_PLATFORM="${ec_platform}"
+# use defaults if something was not set
 : ${ENV_CONFIG_DIR:='~/.env-config'}
 : ${ENV_CONFIG_COLORS:='yes'}
 : ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH:='yes'}
 
-# command line args
+# for specifed feature name set corresponding setting to specified value
 function ec_set_feature_var {
 	local feature="${1}"
 	local value="${2}"
@@ -31,6 +32,8 @@ function ec_set_feature_var {
 		*) echo "Error: unknown feature \"${feature}\""; exit 1;;
 	esac
 }
+
+# process command line arguments
 ec_src=$(dirname "${BASH_SOURCE[0]}")
 ec_verbose='no'
 ec_dryrun='no'
@@ -77,7 +80,7 @@ while getopts ":hvty:n:d:" OPT; do
 	esac
 done
 
-# check install dir path
+# check install dir path (must not have spaces or complex substitutions)
 eval ec_dir="${ENV_CONFIG_DIR}"
 ec_dir_check=$(printf '%q' "${ENV_CONFIG_DIR}")
 if [[ ${ec_dir_check} != ${ENV_CONFIG_DIR} ]]; then
@@ -104,6 +107,7 @@ if [[ ${ec_verbose} == 'yes' ]]; then
 	echo "Dryrun:                      \"${ec_dryrun}\""
 fi
 
+# append one file to another performing some substitutions in the first one
 function ec_append_init_script {
 	local init_script="${1}"
 	local dst_file="${2}"
@@ -120,6 +124,7 @@ function ec_append_init_script {
 	fi
 }
 
+# extract annotated documentation
 function ec_get_docs {
 	local afile="${1}"
 	local doc='^.*@env-config-doc'

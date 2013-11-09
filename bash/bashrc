@@ -23,25 +23,26 @@ fi
 : ${ENV_CONFIG_COLORS:='yes'}
 : ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH:='yes'}
 
-# hello kitty
+# @env-config-doc * Cute hello kitty to welcome you in a new shell
 echo " /\_/\ "
 echo "( o.o )"
 echo " > ^ < "
 
-# path
+# add ${ENV_CONFIG_DIR}/bin folder to path
 if [[ -d "${ec_dir}/bin" ]]; then
 	PATH=${ec_dir}/bin:${PATH}
 fi
 
-# readline
+# ${INPUTRC} can be set to something else, need to fix it
 INPUTRC=~/.inputrc
 
-# custom prompt
+# @env-config-doc * Minimalistic bash command prompt (current dir name only)
 if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
 	PS1='\[\033[0;32m\]\W\[\033[00m\]\$ '
 else
 	PS1='\W$ '
 fi
+# @env-config-doc * Git branch name in bash command prompt
 if [[ ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH} == 'yes' ]]; then
 	ec_bash_prompt_git_branch='$(git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1] /")'
 	if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
@@ -50,7 +51,7 @@ if [[ ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH} == 'yes' ]]; then
 	PS1="${ec_bash_prompt_git_branch}${PS1}"
 fi
 
-# colorize commands
+# @env-config-doc * Add color to console programs (ls, grep, ...)
 if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
 	if [[ ${ENV_CONFIG_PLATFORM} == 'darwin' ]]; then
 		alias ls="ls -G"
@@ -61,9 +62,9 @@ if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
 	fi
 fi
 
-# git completion
+# @env-config-doc * Bash command complition for git
 source "${ec_dir}/bash/git-completion.bash"
-# svn completion
+# @env-config-doc * Bash command complition for subversion
 source "${ec_dir}/bash/svn-completion.bash"
 
 unset ec_dir

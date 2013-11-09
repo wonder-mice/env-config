@@ -1,7 +1,12 @@
 [alias]
-    st = status
-    df = diff
-    dfc = diff --cached
-    lol = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	# @env-config-doc * Use "git st" for "git status"
+	st = status
+	# @env-config-doc * Use "git df" for "git diff"
+	df = diff
+	# @env-config-doc * Use "git dfc" for "git diff --cached"
+	dfc = diff --cached
+	# @env-config-doc * Use "git lol" for awesome formated git log (also try "git lol --all")
+	lol = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 [color]
-    ui = true
+	# @env-config-doc * Add colors to git output
+	ui = true

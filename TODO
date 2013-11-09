@@ -1,8 +1,11 @@
+* Write comments
+
 * Feature - Add annotated documentation support
 Special type of comment, like
 # @env-config-doc Current git branch name will be shown in bash command prompt
 or
 " @env-config-doc Using :A can switch between source and header files
+Need to support conditional comments (when feature not enabled)
 
 * Feature - Figure out how readline vi mode can be an install option
 
@@ -13,6 +16,4 @@ automatically generate help, default values, settings and features processing.
 * Feature - Maybe restrictions on ENC_CONFIG_DIR path can be removed
 Looks like there is no reason to check for complex substitutions and spaces.
 No reason for path to be absolute.
-Oh, forgot about readline... No still need that stuff :(
-
-* Feature - Vim - load .vimrc file from current dir if present
+Oh, forgot about readline and its "~" substitution... No still need that stuff :(

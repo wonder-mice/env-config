@@ -34,7 +34,11 @@ if [[ -d "${ec_dir}/bin" ]]; then
 fi
 
 # ${INPUTRC} can be set to something else, need to fix it
-INPUTRC=~/.inputrc
+export INPUTRC=~/.inputrc
+
+# @env-config-doc * Set vim as default editor
+export EDITOR=vim
+export VISUAL=vim
 
 # @env-config-doc * Minimalistic bash command prompt (current dir name only)
 if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then

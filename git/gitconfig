@@ -5,8 +5,9 @@
 	df = diff
 	# @env-config-doc * Use "git dfc" for "git diff --cached"
 	dfc = diff --cached
-	# @env-config-doc * Use "git lol" for awesome formated git log (also try "git lol --all")
+	# @env-config-doc * Use "git lol" and "git lola" for awesome formated git log
 	lol = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	lola = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --all
 [color]
 	# @env-config-doc * Add colors to git output
 	ui = true

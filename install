@@ -193,6 +193,8 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	mkdir -p "${ec_dir}/bin" || exit 1
 	ec_get_docs "${ec_src}/tools/x"
 	cp "${ec_src}/tools/x" "${ec_dir}/bin/x" || exit 1
+	ec_get_docs "${ec_src}/tools/getpassword"
+	cp "${ec_src}/tools/getpassword" "${ec_dir}/bin/getpassword" || exit 1
 fi
 
 echo "Done!"

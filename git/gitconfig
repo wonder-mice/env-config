@@ -1,13 +1,13 @@
 [alias]
-	# @env-config-doc * Use "git st" for "git status"
+	# @env-config-doc * git: "git st" for "git status"
 	st = status
-	# @env-config-doc * Use "git df" for "git diff"
+	# @env-config-doc * git: "git df" for "git diff"
 	df = diff
-	# @env-config-doc * Use "git dfc" for "git diff --cached"
+	# @env-config-doc * git: "git dfc" for "git diff --cached"
 	dfc = diff --cached
-	# @env-config-doc * Use "git lol" and "git lola" for awesome formated git log
+	# @env-config-doc * git: "git lol" and "git lola" for awesome formated log
 	lol = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	lola = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --all
 [color]
-	# @env-config-doc * Add colors to git output
+	# @env-config-doc * git: add color
 	ui = true

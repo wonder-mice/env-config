@@ -46,7 +46,7 @@ if has('mouse')
   set mouse=a
 endif
 
-" @env-config-doc * Syntax highlighting in Vim
+" @env-config-doc * vim: syntax highlighting
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
 if &t_Co > 2 || has("gui_running")
@@ -112,9 +112,9 @@ au BufNewFile,BufRead *.mm set filetype=objc
 
 " set path+=**,/usr/include/**
 
-" @env-config-doc * Vim will store backup files in ~/.vim/backup
+" @env-config-doc * vim: store backup files in ~/.vim/backup
 set backupdir=~/.vim/backup
-" @env-config-doc * Vim will store swap files in ~/.vim/swap
+" @env-config-doc * vim: store swap files in ~/.vim/swap
 set dir=~/.vim/swap
 set swapfile
 

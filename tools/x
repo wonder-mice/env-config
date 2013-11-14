@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# @env-config-doc * x tool to numerate command output for later reference (try "x -")
+# @env-config-doc * tool: x - numerate command output for later reference
 # Tool can operate in two modes:
 # - Take coomand output and print it numerating each line
 # - Print N-th line from previously numerated output

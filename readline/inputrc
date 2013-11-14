@@ -1,2 +1,2 @@
-# @env-config-doc * Vi editing mode for readline library (bash, gdb, ...)
+# @env-config-doc * readline: vi editing mode
 set editing-mode vi

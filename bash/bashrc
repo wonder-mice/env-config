@@ -66,6 +66,9 @@ if [[ ${ENV_CONFIG_COLORS} == 'yes' ]]; then
 	fi
 fi
 
+# @env-config-doc * bash: "l" for "ls -lah"
+alias l="ls -lah"
+
 # @env-config-doc * bash: command complition for git
 source "${ec_dir}/bash/git-completion.bash"
 # @env-config-doc * bash: command complition for subversion

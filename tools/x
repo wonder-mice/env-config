@@ -21,6 +21,7 @@ function usage {
 	echo "Usage:"
 	echo "    x    - print numerated lines of input and remember them"
 	echo "    x N  - print N-th line from previously numerated output"
+	echo "    x -  - open previous output in default text editor"
 	echo ""
 	echo "Example:"
 	echo "\$ find . -name \"*.c\" | x"
@@ -40,6 +41,12 @@ if [[ 0 == $# ]]; then
 	echo "# Created by x tool (https://github.com/wonder-mice/env-config)" > "${xfile}"
 	tee -a "${xfile}" | nl -p -b a -v 1 -w 4 -s " | "
 	exit 0
+fi
+
+# open previous output in text editor
+if [[ '-' == ${1} ]]; then
+	"${EDITOR:-ed}" "${xfile}"
+	exit $?
 fi
 
 # print n-th line from saved output

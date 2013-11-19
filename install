@@ -21,6 +21,7 @@ ENV_CONFIG_PLATFORM="${ec_platform}"
 : ${ENV_CONFIG_DIR:='~/.env-config'}
 : ${ENV_CONFIG_COLORS:='yes'}
 : ${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH:='yes'}
+: ${ENV_CONFIG_BASH_PROMPT_MARKS:='yes'}
 
 # for specifed feature name set corresponding setting to specified value
 function ec_set_feature_var {
@@ -29,6 +30,7 @@ function ec_set_feature_var {
 	case "${feature}" in
 		colors) ENV_CONFIG_COLORS="${value}";;
 		bash-prompt-git-branch) ENV_CONFIG_BASH_PROMPT_GIT_BRANCH="${value}";;
+		bash-prompt-marks) ENV_CONFIG_BASH_PROMPT_MARKS="${value}";;
 		*) echo "Error: unknown feature \"${feature}\""; exit 1;;
 	esac
 }
@@ -52,6 +54,7 @@ while getopts ":hvty:n:d:" OPT; do
 			echo "    colors                 - more colors"
 			echo "    readline               - readline config file"
 			echo "    bash-prompt-git-branch - git branch name in bash command prompt"
+			echo "    bash-prompt-marks      - text notes in bash command prompt"
 			exit 1
 			;;
 		v)
@@ -104,6 +107,7 @@ if [[ ${ec_verbose} == 'yes' ]]; then
 	echo "Platform:                    \"${ENV_CONFIG_PLATFORM}\""
 	echo "Colors:                      \"${ENV_CONFIG_COLORS}\""
 	echo "Bash prompt with git branch: \"${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH}\""
+	echo "Bash prompt with text marks: \"${ENV_CONFIG_BASH_PROMPT_MARKS}\""
 	echo "Dryrun:                      \"${ec_dryrun}\""
 fi
 
@@ -141,6 +145,7 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	echo "ENV_CONFIG_PLATFORM='${ENV_CONFIG_PLATFORM}'" >> ${ec_settings_file} || exit 1
 	echo "ENV_CONFIG_COLORS='${ENV_CONFIG_COLORS}'" >> ${ec_settings_file} || exit 1
 	echo "ENV_CONFIG_BASH_PROMPT_GIT_BRANCH='${ENV_CONFIG_BASH_PROMPT_GIT_BRANCH}'" >> ${ec_settings_file} || exit 1
+	echo "ENV_CONFIG_BASH_PROMPT_MARKS='${ENV_CONFIG_BASH_PROMPT_MARKS}'" >> ${ec_settings_file} || exit 1
 
 	# readline
 	mkdir -p "${ec_dir}/readline" || exit 1

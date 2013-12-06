@@ -170,6 +170,15 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	esac
 	ec_append_init_script "${ec_src}/bash/bashrc-init" "${ec_bashrc_file}"
 
+	# fish - copy
+	mkdir -p "${ec_dir}/fish" || exit 1
+	ec_get_docs "${ec_src}/fish/config.fish"
+	cp "${ec_src}/fish/config.fish" "${ec_dir}/fish/config.fish" || exit 1
+
+	# fish - source
+	mkdir -p ~/.config/fish || exit 1
+	ec_append_init_script "${ec_src}/fish/config.fish-init" ~/.config/fish/config.fish
+
 	# vim - copy
 	mkdir -p "${ec_dir}/vim" || exit 1
 	ec_get_docs "${ec_src}/vim/vimrc"

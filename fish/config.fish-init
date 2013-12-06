@@ -1,0 +1,3 @@
+# env-config+magic (https://github.com/wonder-mice/env-config)
+set -x ENV_CONFIG_DIR "<[ENV_CONFIG_DIR]>"
+eval source $ENV_CONFIG_DIR/fish/config.fish

@@ -119,3 +119,7 @@ set dir=~/.vim/swap
 set swapfile
 
 let &rtp = printf('%s/vim,%s,%s/vim/after', g:env_config_dir, &rtp, g:env_config_dir)
+
+" search and load filetype.vim in rtp
+filetype off
+filetype on

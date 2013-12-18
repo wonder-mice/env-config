@@ -189,6 +189,8 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	cp "${ec_src}/vim/plugin/file_line.vim" "${ec_dir}/vim/plugin/file_line.vim" || exit 1
 	# https://raw.github.com/vim-scripts/a.vim/master/plugin/a.vim
 	cp "${ec_src}/vim/plugin/a.vim" "${ec_dir}/vim/plugin/a.vim" || exit 1
+	# https://github.com/scala/scala-dist/tree/master/tool-support/src/vim
+	cp "${ec_src}/vim/syntax/scala.vim" "${ec_dir}/vim/syntax/scala.vim" || exit 1
 	# configs
 	ec_get_docs "${ec_src}/vim/vimrc"
 	cp "${ec_src}/vim/vimrc" "${ec_dir}/vim/vimrc" || exit 1

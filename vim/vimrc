@@ -108,8 +108,6 @@ set mouse-=a
 set ignorecase
 set smartcase
 
-au BufNewFile,BufRead *.mm set filetype=objc
-
 " set path+=**,/usr/include/**
 
 " @env-config-doc * vim: store backup files in ~/.vim/backup

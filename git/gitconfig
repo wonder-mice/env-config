@@ -6,8 +6,10 @@
 	# @env-config-doc * git: "git dfc" for "git diff --cached"
 	dfc = diff --cached
 	# @env-config-doc * git: "git lol" and "git lola" for awesome formated log
-	lol = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-	lola = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --all
+	dag = log --graph --pretty=format:'%C(red)%h%C(reset) - %C(green)%cr%C(reset) %C(bold blue)<%ae>%C(reset)%C(auto)%d%C(reset)%n%s' --date-order
+	daga = log --graph --pretty=format:'%C(red)%h%C(reset) - %C(green)%cr%C(reset) %C(bold blue)<%ae>%C(reset)%C(auto)%d%C(reset)%n%s' --date-order --all
+	lol = log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(bold blue)<%ae>%C(reset)'
+	lola = log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%cr) %C(bold blue)<%ae>%C(reset)' --all
 [color]
 	# @env-config-doc * git: add color
 	ui = true

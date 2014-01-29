@@ -36,7 +36,7 @@ set encoding=utf-8
 " @env-config-doc * vim: set tab to 4 spaces and use tabs
 set tabstop=4
 set shiftwidth=4
-set expandtab
+set noexpandtab
 " @env-config-doc * vim: don't wrap lines
 set nowrap
 " @env-config-doc * vim: enable modeline (inline vim settings)

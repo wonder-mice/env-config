@@ -49,6 +49,8 @@ set smartcase
 nnoremap <silent> <Leader>/ :nohlsearch<CR>
 " @env-config-doc * vim: highlight trailing spaces
 match ErrorMsg '\s\+$'
+" @env-config-doc * vim: highlight spaces before a tab
+match ErrorMsg ' \+\ze\t'
 
 " @env-config-doc * vim: store backup files in ~/.vim/backup
 set backupdir=~/.vim/backup

@@ -45,8 +45,8 @@ set modelines=4
 " @env-config-doc * vim: smart ignore case (ignore when lowercase only)
 set ignorecase
 set smartcase
-" @env-config-doc * vim: <Leader>/ for nohlsearch
-nnoremap <silent> <Leader>/ :nohlsearch<CR>
+" @env-config-doc * vim: <leader>/ for nohlsearch
+nnoremap <silent> <leader>/ :nohlsearch<CR>
 " @env-config-doc * vim: <Leader>n for toggle numbering
 nnoremap <leader>n :call NumberToggle()<CR>
 function! NumberToggle()

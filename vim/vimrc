@@ -73,6 +73,8 @@ set backupdir=~/.vim/backup
 " @env-config-doc * vim: store swap files in ~/.vim/swap
 set dir=~/.vim/swap
 set swapfile
+" @env-config-doc * vim: search tags file in parent dirs
+set tags=./tags;
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")

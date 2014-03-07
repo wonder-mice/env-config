@@ -69,14 +69,14 @@ nnoremap <leader>s :split<CR>
 hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 hi CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 nnoremap <leader>c :set cursorline!<CR>
-" @env-config-doc * vim: highlight trailing spaces
-" @env-config-doc * vim: highlight spaces before a tab
-highlight ExtraWhitespace term=standout ctermfg=15 ctermbg=1 guifg=White guibg=Red
-autocmd Syntax * syn match ExtraWhitespace '\s\+$\| \+\ze\t'
 " @env-config-doc * vim: <Leader>c for cursorline
 highlight CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 nnoremap <Leader>c :set cursorline!<CR>
+" @env-config-doc * vim: highlight trailing spaces
+" @env-config-doc * vim: highlight spaces before a tab
+highlight ExtraWhitespace term=standout ctermfg=15 ctermbg=1 guifg=White guibg=Red
+autocmd Syntax * syn match ExtraWhitespace '\s\+$\| \+\ze\t'
 
 " @env-config-doc * vim: store backup files in ~/.vim/backup
 set backupdir=~/.vim/backup

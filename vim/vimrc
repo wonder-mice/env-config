@@ -47,6 +47,8 @@ set ignorecase
 set smartcase
 " @env-config-doc * vim: <leader>/ for nohlsearch
 nnoremap <silent> <leader>/ :nohlsearch<CR>
+" @env-config-doc * vim: <Leader>w for whereami
+nnoremap <silent> <leader>w :Whereami<CR>
 " @env-config-doc * vim: <Leader>n for toggle numbering
 nnoremap <leader>n :call NumberToggle()<CR>
 function! NumberToggle()
@@ -71,6 +73,10 @@ nnoremap <leader>c :set cursorline!<CR>
 " @env-config-doc * vim: highlight spaces before a tab
 highlight ExtraWhitespace term=standout ctermfg=15 ctermbg=1 guifg=White guibg=Red
 autocmd Syntax * syn match ExtraWhitespace '\s\+$\| \+\ze\t'
+" @env-config-doc * vim: <Leader>c for cursorline
+highlight CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+nnoremap <Leader>c :set cursorline!<CR>
 
 " @env-config-doc * vim: store backup files in ~/.vim/backup
 set backupdir=~/.vim/backup

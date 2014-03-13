@@ -65,10 +65,6 @@ endfunction
 nnoremap <leader>v :vsplit<CR>
 " @env-config-doc * vim: <Leader>s for split
 nnoremap <leader>s :split<CR>
-" @env-config-doc * vim: <Leader>c to highlight current line
-hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
-hi CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
-nnoremap <leader>c :set cursorline!<CR>
 " @env-config-doc * vim: <Leader>c for cursorline
 highlight CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 highlight CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white

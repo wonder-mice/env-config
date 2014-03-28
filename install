@@ -194,6 +194,9 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	cp "${ec_src}/vim/plugin/whereami.vim" "${ec_dir}/vim/plugin/whereami.vim" || exit 1
 	# https://github.com/scala/scala-dist/tree/master/tool-support/src/vim
 	cp "${ec_src}/vim/syntax/scala.vim" "${ec_dir}/vim/syntax/scala.vim" || exit 1
+	# https://github.com/vim-scripts/Cpp11-Syntax-Support
+	cp "${ec_src}/vim/syntax/cpp11_cbase.vim" "${ec_dir}/vim/syntax/cpp11_cbase.vim" || exit 1
+	cp "${ec_src}/vim/syntax/cpp11.vim" "${ec_dir}/vim/syntax/cpp11.vim" || exit 1
 	# https://github.com/kana/vim-filetype-haskell/blob/master/indent/haskell.vim
 	cp "${ec_src}/vim/indent/haskell.vim" "${ec_dir}/vim/indent/haskell.vim" || exit 1
 	# configs

@@ -139,8 +139,10 @@ function ec_get_docs {
 if [[ ${ec_dryrun} == 'no' ]]; then
 	# backup old env-config
 	ec_dir_backup="${ec_dir}.backup"
-	rm -rf "${ec_dir_backup}"
-	mv -f "${ec_dir}" "${ec_dir_backup}" || exit 1
+	if [[ -d ${ec_dir_backup} ]]; then
+		rm -rf "${ec_dir_backup}"
+		mv -f "${ec_dir}" "${ec_dir_backup}" || exit 1
+	fi
 
 	# prepare folder
 	mkdir -p "${ec_dir}" || exit 1

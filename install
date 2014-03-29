@@ -137,6 +137,12 @@ function ec_get_docs {
 
 # install / update
 if [[ ${ec_dryrun} == 'no' ]]; then
+	# backup old env-config
+	ec_dir_backup="${ec_dir}.backup"
+	rm -rf "${ec_dir_backup}"
+	mv -f "${ec_dir}" "${ec_dir_backup}" || exit 1
+
+	# prepare folder
 	mkdir -p "${ec_dir}" || exit 1
 
 	# settings file
@@ -222,6 +228,9 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	cp "${ec_src}/tools/x" "${ec_dir}/bin/x" || exit 1
 	ec_get_docs "${ec_src}/tools/getpassword"
 	cp "${ec_src}/tools/getpassword" "${ec_dir}/bin/getpassword" || exit 1
+
+	# remove backup
+	rm -rf "${ec_dir_backup}"
 fi
 
 echo "Done!"

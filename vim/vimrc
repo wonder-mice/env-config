@@ -24,7 +24,6 @@ inoremap <C-U> <C-G>u<C-U>
 " when the terminal has colors, switch syntax and search highlighting
 if &t_Co > 2 || has("gui_running")
 	syntax on
-	autocmd BufNewFile,BufRead *.cpp,*.h,*.cxx,*.hxx set syntax=cpp11
 	set hlsearch
 endif
 

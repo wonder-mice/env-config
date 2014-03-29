@@ -1,13 +1,8 @@
 " Vim syntax file
-"
-" This file is a modified version of the existing vim C++
-" syntax file in order to support C++11 language changes.
-"
-" Original Details
-" ================
 " Language:	C++
-" Maintainer:	Ken Shan <ccshan@post.harvard.edu>
-" Last Change:	2002 Jul 15
+" Current Maintainer:	vim-jp (https://github.com/vim-jp/cpp-vim)
+" Previous Maintainer:	Ken Shan <ccshan@post.harvard.edu>
+" Last Change:	2012 Jun 14
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -19,14 +14,14 @@ endif
 
 " Read the C syntax to start with
 if version < 600
-  so <sfile>:p:h/cpp11_cbase.vim
+  so <sfile>:p:h/c.vim
 else
-  runtime! syntax/cpp11_cbase.vim
+  runtime! syntax/c.vim
   unlet b:current_syntax
 endif
 
-" C++ extentions
-syn keyword cppStatement	new delete this friend using constexpr
+" C++ extensions
+syn keyword cppStatement	new delete this friend using
 syn keyword cppAccess		public protected private
 syn keyword cppType		inline virtual explicit export bool wchar_t
 syn keyword cppExceptions	throw try catch
@@ -36,8 +31,18 @@ syn match cppCast		"\<\(const\|static\|dynamic\|reinterpret\)_cast\s*<"me=e-1
 syn match cppCast		"\<\(const\|static\|dynamic\|reinterpret\)_cast\s*$"
 syn keyword cppStorageClass	mutable
 syn keyword cppStructure	class typename template namespace
-syn keyword cppNumber		NPOS
 syn keyword cppBoolean		true false
+
+" C++ 11 extensions
+if !exists("cpp_no_cpp11")
+  syn keyword cppType		override final
+  syn keyword cppExceptions	noexcept
+  syn keyword cppStorageClass	constexpr decltype
+  syn keyword cppConstant	nullptr
+  " A C++11 raw-string literal. It tries to follow 2.14.5 and 2.14.5.2 of the
+  " standard.
+  syn region cppRawString matchgroup=cppRawDelim start=+\%(u8\=\|[LU]\)\=R"\z(\%([ ()\\\d9-\d12]\@![\d0-\d127]\)\{,16}\)(+ end=+)\z1"+ contains=@Spell
+endif
 
 " The minimum and maximum operators in GNU C++
 syn match cppMinMax "[<>]?"
@@ -58,8 +63,10 @@ if version >= 508 || !exists("did_cpp_syntax_inits")
   HiLink cppType		Type
   HiLink cppStorageClass	StorageClass
   HiLink cppStructure		Structure
-  HiLink cppNumber		Number
   HiLink cppBoolean		Boolean
+  HiLink cppConstant		Constant
+  HiLink cppRawDelim		cFormat
+  HiLink cppRawString		String
   delcommand HiLink
 endif
 

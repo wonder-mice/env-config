@@ -27,6 +27,8 @@ if &t_Co > 2 || has("gui_running")
 	set hlsearch
 endif
 
+" @env-config-doc * vim: undo after buffer switch
+set hidden
 " @env-config-doc * vim: disable mouse support
 set mouse-=a
 " @env-config-doc * vim: turn on line numbers

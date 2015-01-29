@@ -207,9 +207,13 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	cp "${ec_src}/vim/syntax/cpp.vim" "${ec_dir}/vim/syntax/cpp.vim" || exit 1
 	# https://github.com/kana/vim-filetype-haskell/blob/master/indent/haskell.vim
 	cp "${ec_src}/vim/indent/haskell.vim" "${ec_dir}/vim/indent/haskell.vim" || exit 1
+	# https://github.com/Keithbsmiley/swift.vim
+	cp "${ec_src}/vim/indent/swift.vim" "${ec_dir}/vim/indent/swift.vim" || exit 1
+	cp "${ec_src}/vim/syntax/swift.vim" "${ec_dir}/vim/syntax/swift.vim" || exit 1
 	# configs
 	ec_get_docs "${ec_src}/vim/vimrc"
 	cp "${ec_src}/vim/vimrc" "${ec_dir}/vim/vimrc" || exit 1
+    ec_get_docs "${ec_src}/vim/filetype.vim"
 	cp "${ec_src}/vim/filetype.vim" "${ec_dir}/vim/filetype.vim" || exit 1
 
 	# vim - setup

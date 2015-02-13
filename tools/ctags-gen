@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# @env-config-doc * tool: ctags-gen - alias for ctags with common options
+
+version_signature="Exuberant Ctags"
+
+#CTAGS_EXECUTABLE="111"
+if [[ -z ${CTAGS_EXECUTABLE+x} ]]; then
+	while read path; do
+		if [[ $(${path} --version 2> /dev/null) == *"${version_signature}"* ]]; then
+			export CTAGS_EXECUTABLE=${path}
+		fi
+	done < <(which -a ctags)
+fi
+if [[ -z ${CTAGS_EXECUTABLE+x} ]]; then
+	>&2 echo "Error: no ${version_signature} found"
+	exit 1
+fi
+echo "Using: ${CTAGS_EXECUTABLE}"
+
+${CTAGS_EXECUTABLE} \
+	--sort=foldcase \
+	--tag-relative \
+	--extra=+q \
+	--fields=+iaS \
+	--c-kinds=+px \
+	--c++-kinds=+px \
+	--exclude=CMakeLists.txt \
+	--exclude=CMakeFiles \
+	--exclude=Makefile \
+	--recurse \
+	--totals

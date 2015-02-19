@@ -210,6 +210,10 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	# https://github.com/Keithbsmiley/swift.vim
 	cp "${ec_src}/vim/indent/swift.vim" "${ec_dir}/vim/indent/swift.vim" || exit 1
 	cp "${ec_src}/vim/syntax/swift.vim" "${ec_dir}/vim/syntax/swift.vim" || exit 1
+	# https://github.com/Kitware/CMake/tree/master/Auxiliary
+	cp "${ec_src}/vim/indent/cmake.vim" "${ec_dir}/vim/indent/cmake.vim" || exit 1
+	cp "${ec_src}/vim/syntax/cmake.vim" "${ec_dir}/vim/syntax/cmake.vim" || exit 1
+
 	# configs
 	ec_get_docs "${ec_src}/vim/vimrc"
 	cp "${ec_src}/vim/vimrc" "${ec_dir}/vim/vimrc" || exit 1

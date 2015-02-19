@@ -6,3 +6,5 @@ au BufNewFile,BufRead *.gradle setf groovy
 au BufNewFile,BufRead *.swift setf swift
 " @env-config-doc * vim: Objective-C support
 au BufNewFile,BufRead *.mm setf objc
+" @env-config-doc * vim: CMake support
+au BufNewFile,BufRead CMakeLists.txt,*.cmake,*.cmake.in,*.ctest,*.ctest.in setf cmake

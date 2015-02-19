@@ -1,0 +1,4 @@
+# @env-config-doc * gdb: pagination off
+set pagination off
+# @env-config-doc * gdb: print pretty on
+set print pretty on

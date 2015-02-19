@@ -232,6 +232,12 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	cp "${ec_src}/git/gitconfig" "${ec_dir}/git/gitconfig" || exit 1
 	ec_append_init_script "${ec_src}/git/gitconfig-init" ~/.gitconfig
 
+	# gdb
+	mkdir -p "${ec_dir}/gdb" || exit 1
+	ec_get_docs "${ec_src}/gdb/gdbinit"
+	cp "${ec_src}/gdb/gdbinit" "${ec_dir}/gdb/gdbinit" || exit 1
+	ec_append_init_script "${ec_src}/gdb/gdbinit-init" ~/.gdbinit
+
 	# tools
 	mkdir -p "${ec_dir}/bin" || exit 1
 	ec_get_docs "${ec_src}/tools/x"

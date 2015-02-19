@@ -1,0 +1,2 @@
+# env-config+magic (https://github.com/wonder-mice/env-config)
+source <[ENV_CONFIG_DIR]>/gdb/gdbinit

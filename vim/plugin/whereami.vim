@@ -2,6 +2,10 @@
 " Function to call is Whereami. Key binding example:
 " nnoremap <silent> <leader>w :Whereami<CR>
 
+function! s:startswith(string,prefix)
+	return strpart(a:string, 0, strlen(a:prefix)) ==# a:prefix
+endfunction
+
 function! s:strip(s)
 	return substitute(a:s, '^\s*\(.\{-}\)\s*$', '\1', '')
 endfunction
@@ -10,7 +14,10 @@ function! s:is_context(s)
 	if 0 == strlen(a:s)
 		return 0
 	endif
-	if "{" == a:s
+	if s:startswith(a:s, "{")
+		return 0
+	endif
+	if s:startswith(a:s, "#")
 		return 0
 	endif
 	return 1

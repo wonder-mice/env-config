@@ -29,4 +29,5 @@ ${CTAGS_EXECUTABLE} \
 	--exclude=CMakeFiles \
 	--exclude=Makefile \
 	--recurse \
-	--totals
+	--totals \
+	"${@}"

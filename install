@@ -85,14 +85,17 @@ done
 
 # check install dir path (must not have spaces or complex substitutions)
 eval ec_dir="${ENV_CONFIG_DIR}"
-ec_dir_check=$(printf '%q' "${ENV_CONFIG_DIR}")
-if [[ ${ec_dir_check} != ${ENV_CONFIG_DIR} ]]; then
+ec_dir_stripped="${ENV_CONFIG_DIR#\~}"
+ec_dir_check=$(printf '%q' "${ec_dir_stripped}")
+if [[ ${ec_dir_check} != ${ec_dir_stripped} ]]; then
 	echo "Error: install dir \"${ENV_CONFIG_DIR}\" must not contain spaces, variables or other expandable tokens (except ~)"
+	echo "Error: \"${ec_dir_check}\" != \"${ec_dir_stripped}\""
 	exit 1
 fi
-ec_dir_check="${ec_dir_check/#~/${HOME}}"
+ec_dir_check="${ENV_CONFIG_DIR/#~/${HOME}}"
 if [[ ${ec_dir_check} != ${ec_dir} ]]; then
 	echo "Error: install dir \"${ENV_CONFIG_DIR}\" requires complex substitution that is not supported"
+	echo "Error: \"${ec_dir_check}\" != \"${ec_dir}\""
 	exit 1
 fi
 if [[ ${ec_dir} != /* ]]; then

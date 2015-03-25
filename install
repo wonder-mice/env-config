@@ -216,6 +216,8 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	# https://github.com/Kitware/CMake/tree/master/Auxiliary
 	cp "${ec_src}/vim/indent/cmake.vim" "${ec_dir}/vim/indent/cmake.vim" || exit 1
 	cp "${ec_src}/vim/syntax/cmake.vim" "${ec_dir}/vim/syntax/cmake.vim" || exit 1
+	# https://github.com/kergoth/vim-bitbake
+	cp "${ec_src}/vim/syntax/bitbake.vim" "${ec_dir}/vim/syntax/bitbake.vim" || exit 1
 
 	# configs
 	ec_get_docs "${ec_src}/vim/vimrc"

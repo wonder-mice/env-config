@@ -8,3 +8,5 @@ au BufNewFile,BufRead *.swift setf swift
 au BufNewFile,BufRead *.mm setf objc
 " @env-config-doc * vim: CMake support
 au BufNewFile,BufRead CMakeLists.txt,*.cmake,*.cmake.in,*.ctest,*.ctest.in setf cmake
+" @env-config-doc * vim: BitBake support
+au BufNewFile,BufRead *.bb,*.bbappend,*.bbclass setf bitbake

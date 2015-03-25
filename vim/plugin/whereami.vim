@@ -17,6 +17,12 @@ function! s:is_context(s)
 	if s:startswith(a:s, "{")
 		return 0
 	endif
+	if s:startswith(a:s, "/*")
+		return 0
+	endif
+	if s:startswith(a:s, "//")
+		return 0
+	endif
 	if s:startswith(a:s, "#")
 		return 0
 	endif

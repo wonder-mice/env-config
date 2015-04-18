@@ -10,6 +10,19 @@ function! s:strip(s)
 	return substitute(a:s, '^\s*\(.\{-}\)\s*$', '\1', '')
 endfunction
 
+function! s:is_context_part(s)
+	if s:startswith(a:s, "else")
+		return 1
+	endif
+	if s:startswith(a:s, "}")
+		return 1
+	endif
+	if s:startswith(a:s, ")")
+		return 1
+	endif
+	return 0
+endfunction
+
 function! s:is_context(s)
 	if 0 == strlen(a:s)
 		return 0
@@ -46,6 +59,10 @@ function! s:whereami()
 			continue
 		endif
 		let l:str = s:strip(getline(p))
+		if s:is_context_part(str)
+			call insert(mlst, [str, ind, p])
+			continue
+		endif
 		if !s:is_context(str)
 			continue
 		endif
@@ -65,4 +82,4 @@ function! Whereami()
 	endfor
 endfunction
 
-command -bar -nargs=0 Whereami :call Whereami()
+command! -bar -nargs=0 Whereami :call Whereami()

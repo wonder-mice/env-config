@@ -2,8 +2,13 @@
 " Function to call is Whereami. Key binding example:
 " nnoremap <silent> <leader>w :Whereami<CR>
 
-function! s:startswith(string,prefix)
-	return strpart(a:string, 0, strlen(a:prefix)) ==# a:prefix
+function! s:startswith(string, prefix)
+	return strpart(a:string, 0, strlen(a:prefix)) ==? a:prefix
+endfunction
+
+function! s:endswith(string, suffix)
+	let l:sfxlen = strlen(a:suffix)
+	return strpart(a:string, strlen(a:string) - l:sfxlen, l:sfxlen) ==? a:suffix
 endfunction
 
 function! s:strip(s)
@@ -11,6 +16,13 @@ function! s:strip(s)
 endfunction
 
 function! s:is_context_part(s)
+	let l:ft = &filetype
+	if 0 <= index(["c", "cpp"], l:ft) && s:endswith(a:s, ":")
+		if s:startswith(a:s, "case ")
+			return 0
+		endif
+		return 1
+	endif
 	if s:startswith(a:s, "else")
 		return 1
 	endif

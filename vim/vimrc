@@ -80,7 +80,7 @@ let java_allow_cpp_keywords=1
 
 " @env-config-doc * vim: store backup files in ~/.vim/backup
 set backupdir=~/.vim/backup
-" @env-config-doc * vim: store swap files in ~/.vim/swap
+set backup
 set dir=~/.vim/swap
 set swapfile
 " @env-config-doc * vim: search tags file in parent dirs
@@ -95,18 +95,20 @@ if has("autocmd")
 	filetype plugin indent on
 	" Put these in an autocmd group, so that we can delete them easily.
 	augroup vimrcEx
-	au!
-	" For all text files set 'textwidth' to 78 characters.
-	autocmd FileType text setlocal textwidth=78
-	" When editing a file, always jump to the last known cursor position.
-	" Don't do it when the position is invalid or when inside an event handler
-	" (happens when dropping a file on gvim).
-	" Also don't do it when the mark is in the first line, that is the default
-	" position when opening a file.
-	autocmd BufReadPost *
-		\ if line("'\"") > 1 && line("'\"") <= line("$") |
-		\   exe "normal! g`\"" |
-		\ endif
+		au!
+		" For all text files set 'textwidth' to 78 characters.
+		autocmd FileType text setlocal textwidth=78
+		" When editing a file, always jump to the last known cursor position.
+		" Don't do it when the position is invalid or when inside an event handler
+		" (happens when dropping a file on gvim).
+		" Also don't do it when the mark is in the first line, that is the default
+		" position when opening a file.
+		autocmd BufReadPost *
+			\ if line("'\"") > 1 && line("'\"") <= line("$") |
+			\   exe "normal! g`\"" |
+			\ endif
+		" @env-config-doc * vim: add timestamp to backup file name
+		autocmd BufWritePre * let &backupext = strftime(".%Y%m%d-%H%M.bak")
 	augroup END
 else
 	" always set autoindenting on

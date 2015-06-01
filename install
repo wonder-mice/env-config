@@ -203,6 +203,8 @@ if [[ ${ec_dryrun} == 'no' ]]; then
 	cp "${ec_src}/vim/plugin/a.vim" "${ec_dir}/vim/plugin/a.vim" || exit 1
 	# https://raw.github.com/wonder-mice/vim-whereami/master/plugin/whereami.vim
 	cp "${ec_src}/vim/plugin/whereami.vim" "${ec_dir}/vim/plugin/whereami.vim" || exit 1
+	# https://github.com/MarcWeber/vim-addon-local-vimrc
+	cp "${ec_src}/vim/plugin/localvimrc.vim" "${ec_dir}/vim/plugin/localvimrc.vim" || exit 1
 	# https://github.com/scala/scala-dist/tree/master/tool-support/src/vim
 	cp "${ec_src}/vim/syntax/scala.vim" "${ec_dir}/vim/syntax/scala.vim" || exit 1
 	# https://github.com/vim-jp/cpp-vim
